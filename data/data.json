@@ -1,0 +1,61 @@
+{
+  "Workouts": [
+    {
+      "id": 1,
+      "name": "Tréning mobility + sila",
+      "sets": 3,
+      "duration": 25,
+      "pause": 5,
+      "exercises": [
+        {
+          "id": 1,
+          "name": "Quadruped Extension Rotation",
+          "link": "https://www.youtube.com/embed/dlJQTGT-mpU",
+          "image": "https://cdn-ami-drupal.heartyhosting.com/sites/muscleandfitness.com/files/quad-rotation-1280.jpg"
+        },
+        {
+          "id": 2,
+          "name": "Core Exercise: Dead Bug",
+          "link": "https://www.youtube.com/embed/g_BYB0R-4Ws",
+          "image": "https://media.self.com/photos/580a37dc7f7be8915ea98685/master/w_1600%2Cc_limit/dead-bug_ab-stacked.jpg"
+        },
+        {
+          "id": 3,
+          "name": "Supine Shoulder Slides",
+          "link": "https://www.youtube.com/embed/ODc0f0ZPeOE",
+          "image": "https://s5.gifyu.com/images/Supine_Floor_Slides.gif"
+        },
+        {
+          "id": 4,
+          "name": "Bird Dog Exercise",
+          "link": "https://www.youtube.com/embed/k2azbhhuKuM",
+          "image": "https://media1.popsugar-assets.com/files/thumbor/IEmOzJE4Y5Ihd3DlOTz0aZMgV38/fit-in/2048xorig/filters:format_auto-!!-:strip_icc-!!-/2016/03/04/782/n/1922398/2ee70a7d18af78da_Circuit-One-Bird-Dog.jpg"
+        },
+        {
+          "id": 5,
+          "name": "Yoga Push-ups",
+          "link": "https://www.youtube.com/embed/zxNSXfHnNyE",
+          "image": "https://3i133rqau023qjc1k3txdvr1-wpengine.netdna-ssl.com/wp-content/uploads/2014/08/Downward-Dog-Push-Up_Exercise.jpg"
+        },
+        {
+          "id": 6,
+          "name": "Supine Leg Whips",
+          "link": "https://www.youtube.com/embed/e_ezfj4qgIg",
+          "image": "https://i.ytimg.com/vi/e_ezfj4qgIg/maxresdefault.jpg"
+        },
+        {
+          "id": 7,
+          "name": "Single Leg Floor Reach",
+          "link": "https://www.youtube.com/embed/WXvu7_Nzj-M",
+          "image": "https://stephencabral.com/wp-content/uploads/2019/09/Single-Leg-Single-Arm-Reach.jpg"
+        },
+        {
+          "id": 8,
+          "name": "Floor Scorpion Mobility Exercise",
+          "link": "https://www.youtube.com/embed/q9Sllm2jEss",
+          "image": "https://yurielkaim.com/wp-content/uploads/2012/07/12-Crucial-Dynamic-Warm-up-Exercises.jpg"
+        }
+      ]
+    }
+  ]
+}
