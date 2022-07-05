@@ -121,9 +121,14 @@ const Header = () => {
         <p>
           {session.user.name} ({session.user.email})
         </p>
-        <Link href="/create_workout">
+        <Link href="/create/workout">
           <button>
             <a>Create Workout</a>
+          </button>
+        </Link>
+        <Link href="/create/exercise">
+          <button>
+            <a>Create Exercise</a>
           </button>
         </Link>
         <button onClick={() => signOut()}>
