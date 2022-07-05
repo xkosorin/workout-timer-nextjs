@@ -84,11 +84,12 @@ model Lap {
 }
 
 model Exercise {
-  id          String   @id @default(cuid())
-  title       String   @unique
-  description String?
-  mediaURL    String?
-  updatedAt   DateTime @updatedAt
+  id           String   @id @default(cuid())
+  title        String   @unique
+  description  String?
+  mediaURL     String?
+  mediaIsImage Boolean  @default(false)
+  updatedAt    DateTime @updatedAt
 
   usedExercise UsedExercise[]
 }
