@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { NextPage } from "next";
+import React, { useState } from "react";
 import Header from "../../components/Header";
 
 const initialData = {
@@ -8,9 +9,22 @@ const initialData = {
   mediaIsImage: false,
 }
 
-const CreateExercise: React.FC = () => {
+const CreateExercise: NextPage = () => {
   const [data, setData] = useState(initialData);
-  const submitData = () => {}
+  const submitData = async (e: React.SyntheticEvent) => {
+    e.preventDefault();
+
+    try {
+      const data ={ title, description, mediaURL, mediaIsImage };
+      await fetch('/api/create_exercise', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>) => {
     let name = e.currentTarget.name;
