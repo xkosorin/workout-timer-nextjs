@@ -1,4 +1,5 @@
 import { NextPage } from "next";
+import Router from "next/router";
 import React, { useState } from "react";
 import Header from "../../components/Header";
 
@@ -21,6 +22,7 @@ const CreateExercise: NextPage = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
       });
+      await Router.push('/exercises');
     } catch (error) {
       console.error(error);
     }
