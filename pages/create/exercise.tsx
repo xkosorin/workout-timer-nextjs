@@ -1,7 +1,7 @@
 import { NextPage } from "next";
 import Router from "next/router";
 import React, { useState } from "react";
-import Header from "../../components/Header";
+import Layout from "../../components/Layout";
 
 const initialData = {
   title: "",
@@ -38,8 +38,7 @@ const CreateExercise: NextPage = () => {
   }
 
   return (
-    <div>
-      <Header />
+    <Layout>
       <form onSubmit={submitData} className="w-full md:w-10/12 m-auto">
         <h2 className="p-10 pl-0">Add new exercise to database</h2>
         <div className="mb-4">
@@ -60,7 +59,7 @@ const CreateExercise: NextPage = () => {
         </div>
         <input className="send-button" disabled={!data.title} type="submit" value="Create" />
       </form>
-    </div>
+    </Layout>
   )
 }
 

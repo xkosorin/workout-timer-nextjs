@@ -1,6 +1,6 @@
 import { GetServerSideProps, NextPage } from "next";
 import Image from "next/image";
-import Header from "../components/Header";
+import Layout from "../components/Layout";
 import prisma from '../lib/prisma'
 
 type ThisExerc = {
@@ -30,8 +30,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
 
 const Exercises: NextPage<{ exercises: ThisExerc[] }> = (props: { exercises: ThisExerc[] }) => {
   return(
-    <div>
-      <Header />
+    <Layout>
       {
         props.exercises.map((single: ThisExerc, i: any) => {
           return (
@@ -43,7 +42,7 @@ const Exercises: NextPage<{ exercises: ThisExerc[] }> = (props: { exercises: Thi
           )
         })
       }
-    </div>
+    </Layout>
   )
 }
 

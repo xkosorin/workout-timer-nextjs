@@ -1,11 +1,10 @@
 import type { NextPage } from 'next'
-import Header from '../components/Header';
+import Layout from '../components/Layout';
 
 const Home: NextPage = () => (
-    <div>
-      <Header />
-      <h1>Main Page</h1>
-    </div>
+  <Layout>
+    <h1>Main Page</h1>
+  </Layout>
 )
 
 export default Home
