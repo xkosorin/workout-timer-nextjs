@@ -31,17 +31,19 @@ export const getServerSideProps: GetServerSideProps = async () => {
 const Exercises: NextPage<{ exercises: ThisExerc[] }> = (props: { exercises: ThisExerc[] }) => {
   return(
     <Layout>
+      <div className="grid grid-cols-3 gap-4">
       {
         props.exercises.map((single: ThisExerc, i: any) => {
           return (
-            <div key={i}>
-              <h3 key={i}>{single.title}</h3>
-              <p>{single.description}</p>
-              {single.mediaURL ? <Image src={single.mediaURL} width={300} height={300} alt="Picture of the author" /> : ""}
+            <div key={i} className="flex flex-col items-center">
+              <h3 key={i} className="uppercase text-lg text-gray-600 font-semibold flex-1">{single.title}</h3>
+              <p className="text-sm font-light text-slate-400">{single.description}</p>
+              {single.mediaURL ? <Image src={single.mediaURL} width={300} height={300} alt="Picture of the author" className="flex-1"/> : ""}
             </div>
           )
         })
       }
+      </div>
     </Layout>
   )
 }
