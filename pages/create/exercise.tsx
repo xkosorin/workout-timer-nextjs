@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Header from "../../components/Header";
 
 const initialData = {
   title: "",
@@ -22,25 +23,26 @@ const CreateExercise: React.FC = () => {
 
   return (
     <div>
-      <form onSubmit={submitData} >
-        <h2>Add new exercise to database</h2>
+      <Header />
+      <form onSubmit={submitData} className="w-full md:w-10/12 m-auto">
+        <h2 className="p-10 pl-0">Add new exercise to database</h2>
         <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="title">Exercise title</label>
-          <input autoFocus onChange={handleInput} type="text" placeholder="Exercise title" id="title" name="title" />
+          <label className="input-label" htmlFor="title">Exercise title</label>
+          <input className="input-text" autoFocus onChange={handleInput} type="text" placeholder="Exercise title" id="title" name="title" />
         </div>
         <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="description">Exercise description</label>
-          <textarea onChange={handleInput} cols={30} placeholder="Exercise description" rows={3} id="description" name="description" />
+          <label className="input-label" htmlFor="description">Exercise description</label>
+          <textarea className="input-text" onChange={handleInput} cols={30} placeholder="Exercise description" rows={3} id="description" name="description" />
         </div>
         <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="mediaURL">Link for image / video</label>
-          <input onChange={handleInput} type="url" placeholder="Exercise image / vide URL" id="mediaURL" name="mediaURL" />
+          <label className="input-label" htmlFor="mediaURL">Link for image / video</label>
+          <input className="input-text" onChange={handleInput} type="url" placeholder="Exercise image / vide URL" id="mediaURL" name="mediaURL" />
         </div>
         <div className="mb-4">
-          <label htmlFor="mediaIsImage">Is media image?</label>
-          <input onChange={handleInput} type="checkbox" id="mediaIsImage" name="mediaIsImage" />
+          <input className="input-checkbox" onChange={handleInput} type="checkbox" id="mediaIsImage" name="mediaIsImage" />
+          <label className="inline-block ml-2 align-middle input-label" htmlFor="mediaIsImage">Is media image?</label>
         </div>
-        <input disabled={!data.title} type="submit" value="Create" />
+        <input className="send-button" disabled={!data.title} type="submit" value="Create" />
       </form>
     </div>
   )
