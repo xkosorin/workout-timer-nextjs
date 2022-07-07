@@ -40,7 +40,7 @@ const CreateExercise: NextPage = () => {
   return (
     <Layout>
       <form onSubmit={submitData}>
-        <h2 className="p-10 pl-0">Add new exercise to database</h2>
+        <h2 className="p-10 pl-0 text-xl">Add new exercise to database</h2>
         <div className="mb-4">
           <label className="input-label" htmlFor="title">Exercise title</label>
           <input className="input-text" autoFocus onChange={handleInput} type="text" placeholder="Exercise title" id="title" name="title" />
