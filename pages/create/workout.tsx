@@ -1,15 +1,23 @@
 import { GetServerSideProps, NextPage } from "next";
-import React, { SyntheticEvent, useState } from "react";
+import React, { SyntheticEvent, useEffect, useState } from "react";
 import Layout from "../../components/Layout";
-import 'xtendui';
-import 'xtendui/src/groupnumber';
-import CreateExerciseRow from "../../components/CreateExerciseRow";
 import prisma from "../../lib/prisma";
-import { getSession } from "next-auth/react";
-import { v4 as uuid } from 'uuid';
+import { getSession, useSession } from "next-auth/react";
+import CreateWorkoutTable from "../../components/CreateWorkoutTable";
+import { uuid } from "uuidv4";
+import Router from "next/router";
 
-type Laps = {
-  laps: UsedExercise[];
+type Workout = {
+  userId: string;
+  title: string;
+  description: string;
+  laps: Lap[];
+}
+
+type Lap = {
+  uuid: string;
+  usedExercises: UsedExercise[];
+  exerciseCount: number;
 }
 
 type UsedExercise = {
@@ -27,12 +35,8 @@ type Exercise = {
 
 type Props = {
   exerciseList: Exercise[];
+  test: any;
 }
-
-let defaultData: UsedExercise[] = [
-  {uuid: uuid(), title: "Squat", exerciseId: "cl5uwpkb80097jotq46rpt1gy", reps: 0, timed: false},
-  {uuid: uuid(), title: "Front squat", exerciseId: "cl5uwpkb80dd097jotq46rpt1gy", reps: 0, timed: false}
-]
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   const session = await getSession({ req });
@@ -47,112 +51,114 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 }
 
 const CreateWorkout: NextPage<Props> = (props) => {
-  const [showSelect, setShowSelect] = useState(false);
-  const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(null);
-  const [data, setData] = useState(defaultData);
+  const [workout, setWorkout] = useState<Workout>({
+    userId: "",
+    title: "",
+    description: "",
+    laps: [],
+  });
+  const [laps, setLaps] = useState<Lap[]>([]);
+
+  const { data: session, status } = useSession();
+
+  if (status === "unauthenticated") {
+    return (
+      <Layout>
+        <pre>Access Denied</pre>
+      </Layout>
+    )
+  }
 
   const submitData = async(e: SyntheticEvent) => {
     e.preventDefault();
+
+    try {
+      const body = { ...workout };
+      await fetch('/api/workout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      await Router.push('/exercises');
+    } catch (error) {
+      console.error(error);
+    }
   }
 
-  const handleUpdate = (id: string, reps: number, timed: boolean) => {
-    const newState = data.map(data => {
-      if (data.uuid === id) 
-        return {...data, reps, timed};
-
-      return data;
-    });
-
-    setData(newState);
-  }
-
-  const handleTitleUpdate = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleInput = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>) => {
     let name = e.currentTarget.name;
-    let value = e.currentTarget.type === "switch-usage" ? (e.currentTarget as HTMLInputElement).checked : e.currentTarget.value;
-  }
+    let value = e.currentTarget.value;
 
-  const handleSelect = (e: SyntheticEvent) => {
-    setSelectedExercise({
-      id: (e.target as HTMLInputElement).value,
-      title: props.exerciseList.find(exercise => exercise.id === (e.target as HTMLInputElement).value)?.title
+    setWorkout({
+      ...workout,
+      [name]: value
     });
   }
 
-  const handleAddExerciseClick = (e: SyntheticEvent) => {
+  const handleAddLapButton = (e: SyntheticEvent) => {
     e.preventDefault();
-    setShowSelect(true);
 
-    if (selectedExercise === null)
-      return;
-
-    const newExercise: UsedExercise = {
+    const newLap: Lap = {
       uuid: uuid(),
-      exerciseId: selectedExercise.id,
-      title: selectedExercise.title ?? "Unknown exercise",
-      reps: 0,
-      timed: false
+      usedExercises: [],
+      exerciseCount: 0
     }
 
-    setData([...data, newExercise])
+    setLaps([...laps, newLap]);
   }
 
-  const handleDelete = (id: string) => {
-    setData((prevData) =>
-      prevData.filter((prevItem) => prevItem.uuid !== id)
+  const handleUpdate = (uuid: string, exercises: UsedExercise[]) => {
+    const newState = laps.map(lap => {
+      if (lap.uuid === uuid) 
+        return {uuid: lap.uuid, usedExercises: exercises, exerciseCount: exercises.length};
+
+      return lap;
+    });
+
+    setLaps(newState);
+  }
+
+  const handleDeleteLapButton = (e: SyntheticEvent, uuid: string) => {
+    e.preventDefault();
+
+    setLaps((prevLaps) =>
+      prevLaps.filter((prevLap) => prevLap.uuid !== uuid)
     );
   }
 
+  useEffect(() => {
+    setWorkout({
+      ...workout,
+      // @ts-ignore
+      userId: session?.user.id,
+      laps
+    })
+    console.log("fired")
+  }, [session, laps])
+
   return (
     <Layout>
-      <form onSubmit={submitData}>
+      <form onSubmit={ submitData }>
         <h2 className="p-10 pl-0 text-xl">Create new workout</h2>
         <div className="mb-4">
           <label className="input-label" htmlFor="title">Workout title</label>
-          <input className="input-text" autoFocus onChange={handleTitleUpdate} type="text" placeholder="Exercise title" id="title" name="title" />
+          <input className="input-text" autoFocus onChange={ handleInput } type="text" placeholder="Exercise title" id="title" name="title" />
         </div>
         <div className="mb-4">
-          <label className="input-label" htmlFor="title">Exercises in lap #</label>
-          <div className="block w-full">
-            <table className="w-full bg-gray-50 text-gray-700 border border-slate-300 py-3 mb-3 leading-tight">
-              <thead className="text-xs border-b border-slate-300 rounded-tl-lg rounded-tr-lg">
-                <tr>
-                  <th className="w-8/12 text-left pl-4 py-4">Exercise</th>
-                  <th className="w-1/12 text-center py-4">Reps. / Sec.</th>
-                  <th className="w-1/12 text-center py-4">Is timed</th>
-                  <th className="w-2/12 text-center py-4">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {data.map((exercise) => (
-                  <CreateExerciseRow id={ exercise.uuid } title={ exercise.title } onUpdate={ handleUpdate } onDelete={ handleDelete } key={ exercise.uuid } />
-                ))}
-              </tbody>
-              <tfoot>
-                <tr>
-                  <td className="pt-4 pl-4">
-                    {
-                      showSelect &&
-                      <div className="inline-block mr-5">
-                        <select
-                          className="inline-block w-full xt-select rounded-md py-2.5 px-3.5 pr-20 text-gray-900 placeholder-black placeholder-opacity-75 bg-gray-100 transition focus:bg-gray-200 focus:outline-none"
-                          aria-label="Select"
-                          onChange={handleSelect}>
-                          <option defaultValue="">Select an option</option>
-                          {props.exerciseList.map((exercise) => (
-                            <option value={ exercise.id } key={ exercise.id }>{ exercise.title }</option>
-                          ))}
-                        </select>
-                      </div>
-                    }
-                    <button onClick={handleAddExerciseClick} disabled={(showSelect && selectedExercise === null)}>Add { !showSelect && "exercise"}</button>
-                  </td>
-                </tr>
-              </tfoot>
-            </table>
-          </div>
+          <label className="input-label" htmlFor="description">Exercise description</label>
+          <textarea className="input-text" onChange={ handleInput } cols={ 30 } placeholder="Exercise description" rows={ 3 } id="description" name="description" />
         </div>
-        <button className="">Add lap</button>
+        <div className="mb-4">
+            {laps.map((lap, i) => (
+              <CreateWorkoutTable uuid={ lap.uuid } lapIndex={ i } exerciseList={ props.exerciseList } onUpdate={ handleUpdate } onDelete={ handleDeleteLapButton } key={ lap.uuid } />
+            ))}
+        </div>
+        <button onClick={ handleAddLapButton }>Add lap</button>
+        <input className="ml-8" type="submit" value="Create workout" />
       </form>
+      <pre>
+        {JSON.stringify(workout, undefined, 2)}
+      </pre>
     </Layout>
   );
 }
