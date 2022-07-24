@@ -4,10 +4,10 @@ import prisma from "../../../lib/prisma";
 
 interface ExtendedNextApiRequest extends NextApiRequest {
   body: {
-    title: "",
-    description: "",
-    mediaURL: "",
-    mediaIsImage: false,
+    title: string,
+    description: string,
+    mediaURL: string,
+    mediaIsImage: boolean
   };
 }
 
