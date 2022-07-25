@@ -2,7 +2,6 @@ import { Exercise } from '@prisma/client'
 import { GetServerSideProps, NextPage } from "next";
 import Image from 'next/image'
 import prisma from '../../lib/prisma'
-import { ParsedUrlQuery } from 'querystring';
 
 type ThisExerc = {
   id: string;
@@ -10,7 +9,7 @@ type ThisExerc = {
   description: string | null;
   mediaURL: string | null;
 }
- 
+
 export const getServerSideProps: GetServerSideProps<any> = async ({ params }) => {
   const exercise = await prisma.exercise.findUnique({
     where: {
