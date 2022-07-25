@@ -50,6 +50,9 @@ const Header = () => {
         <Link href="/exercises">
           <a className="pl-4" data-active={isActive('/exercises')}>All Exercises</a>
         </Link>
+        <Link href="/workouts">
+          <a className="pl-4" data-active={isActive('/workouts')}>All Workouts</a>
+        </Link>
       </div>
     );
     right = (
