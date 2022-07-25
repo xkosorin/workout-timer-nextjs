@@ -1,6 +1,6 @@
 import { FC, SyntheticEvent, useEffect, useState } from "react";
 import { uuid } from "uuidv4";
-import CreateExerciseRow from "./CreateWorkoutRow";
+import CreateExerciseRow from "./WorkoutRow";
 
 type UsedExercise = {
   uuid: string;
