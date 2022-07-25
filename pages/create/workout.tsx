@@ -133,13 +133,12 @@ const CreateWorkout: NextPage<Props> = (props) => {
       userId: session?.user.id,
       laps
     })
-    console.log("fired")
   }, [session, laps])
 
   return (
     <Layout>
       <form onSubmit={ submitData }>
-        <h2 className="p-10 pl-0 text-xl">Create new workout</h2>
+        <h2 className="p-10 pl-0 text-xl">Add new workout to database</h2>
         <div className="mb-4">
           <label className="input-label" htmlFor="title">Workout title</label>
           <input className="input-text" autoFocus onChange={ handleInput } type="text" placeholder="Exercise title" id="title" name="title" />
@@ -153,12 +152,9 @@ const CreateWorkout: NextPage<Props> = (props) => {
               <CreateWorkoutTable uuid={ lap.uuid } lapIndex={ i } exerciseList={ props.exerciseList } onUpdate={ handleUpdate } onDelete={ handleDeleteLapButton } key={ lap.uuid } />
             ))}
         </div>
-        <button onClick={ handleAddLapButton }>Add lap</button>
-        <input className="ml-8" type="submit" value="Create workout" />
+        <button className="add-button" onClick={ handleAddLapButton }>Add lap</button>
+        <input className="ml-4 send-button" disabled={ laps.length == 0 || laps[0].exerciseCount == 0 || !workout.title } type="submit" value="Create workout" />
       </form>
-      <pre>
-        {JSON.stringify(workout, undefined, 2)}
-      </pre>
     </Layout>
   );
 }

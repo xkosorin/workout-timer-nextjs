@@ -100,22 +100,22 @@ const CreateWorkoutTable: FC<Props> = (props: Props) => {
             <td className="py-4 pl-4" colSpan={3}>
               {
                 showSelect &&
-                <div className="inline-block mr-5">
+                <div className="inline-block mr-5 border-gray-900">
                   <select
-                    className="inline-block w-full xt-select rounded-md py-2.5 px-3.5 pr-20 text-gray-900 placeholder-black placeholder-opacity-75 bg-gray-100 transition focus:bg-gray-200 focus:outline-none"
+                    className="inline-block w-full xt-select rounded-md py-1 px-3.5 pr-20 text-gray-900 placeholder-black placeholder-opacity-75 bg-gray-100 transition focus:bg-gray-200 focus:outline-none"
                     aria-label="Select"
                     onChange={ handleSelect }>
-                    <option defaultValue="">Select an option</option>
+                    <option disabled selected>Select an option</option>
                     {props.exerciseList.map((exercise) => (
                       <option value={ exercise.id } key={ exercise.id }>{ exercise.title }</option>
                     ))}
                   </select>
                 </div>
               }
-              <button onClick={ handleAddExerciseButton } disabled={ (showSelect && selectedExercise === null) }>Add { !showSelect && "exercise" }</button>
+              <button className="add-button-sm" onClick={ handleAddExerciseButton } disabled={ (showSelect && selectedExercise === null) }>Add { !showSelect && "exercise" }</button>
             </td>
-            <td className="py-4 pr-4 text-right">
-              <button onClick={ (e) => props.onDelete(e, props.uuid) }>Remove lap</button>
+            <td className="py-4 text-center">
+              <button className="delete-button-sm" onClick={ (e) => props.onDelete(e, props.uuid) }>Remove lap</button>
             </td>
           </tr>
         </tfoot>

@@ -42,14 +42,14 @@ const CreateExerciseRow: FC<Props> = (props: Props) => {
 
   return(
     <tr className="w-full border-b">
-      <td className="py-6 pl-4">{ props.title }</td>
+      <td className="py-6 pl-4 font-medium">{ props.title }</td>
       <td className="text-center">                    
         <div className="xt-list flex-nowrap justify-center" data-xt-groupnumber>
           <div className="inline-flex">
             <button onClick={ (e) => updateReps(e, "minus") } className=" bg-gray-300 text-gray-600 hover:text-gray-700 hover:bg-gray-400 h-full w-20 rounded-l cursor-pointer outline-none">
                 <span className="m-auto text-2xl font-thin">-</span>
             </button>
-            <input type="number" value={ reps } className="outline-none focus:outline-none text-center w-full bg-gray-300 font-semibold text-md hover:text-black focus:text-black md:text-basecursor-default flex items-center text-gray-700" name="custom-input-number" onInput={ handleInput } min="0" />
+            <input type="number" value={ reps } className="outline-none focus:outline-none text-center w-full bg-gray-300 font-semibold text-md hover:text-black focus:text-black md:text-basecursor-default flex items-center text-gray-700 appearance-none" name="custom-input-number" onInput={ handleInput } min="0" />
             <button onClick={ (e) => updateReps(e, "plus") } className="bg-gray-300 text-gray-600 hover:text-gray-700 hover:bg-gray-400 h-full w-20 rounded-r cursor-pointer">
                 <span className="m-auto text-2xl font-thin">+</span>
             </button>
