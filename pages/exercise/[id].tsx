@@ -1,14 +1,7 @@
-import { Exercise } from '@prisma/client'
 import { GetServerSideProps, NextPage } from "next";
 import Image from 'next/image'
 import prisma from '../../lib/prisma'
-
-type ThisExerc = {
-  id: string;
-  title: string;
-  description: string | null;
-  mediaURL: string | null;
-}
+import { Exercise } from '../../types';
 
 export const getServerSideProps: GetServerSideProps<any> = async ({ params }) => {
   const exercise = await prisma.exercise.findUnique({
@@ -28,11 +21,11 @@ export const getServerSideProps: GetServerSideProps<any> = async ({ params }) =>
   }
 }
 
-const Exercise: NextPage<Exercise> = (props: ThisExerc) => (
+const Exercise: NextPage<Exercise> = (props: Exercise) => (
   <div>
-    <h3>{props.title}</h3>
-    <p>{props.description}</p>
-    {props.mediaURL ? <Image src={props.mediaURL} alt="Test" width={300} height={300} /> : ""}
+    <h3>{ props.title }</h3>
+    <p>{ props.description }</p>
+    { props.mediaURL ? <Image src={ props.mediaURL } alt="Test" width={ 300 } height={ 300 } /> : "" }
   </div>
 )
 
