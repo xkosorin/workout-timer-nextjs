@@ -4,7 +4,6 @@ import NextAuth from "next-auth";
 import GitHubProvider from 'next-auth/providers/github';
 import EmailProvider from "next-auth/providers/email";
 import prisma from "../../../lib/prisma";
-import { Session, User } from "@prisma/client";
 
 const authHandler: NextApiHandler = (req, res) => NextAuth(req, res, options);
 export default authHandler;

@@ -12,7 +12,7 @@ const Header = () => {
   let left = (
     <div className="">
       <Link href="/">
-        <a className="bold pl-4" data-active={isActive('/')}>
+        <a className="bold pl-4" data-active={ isActive('/') }>
           Feed
         </a>
       </Link>
@@ -33,7 +33,7 @@ const Header = () => {
     right = (
       <div>
         <Link href="/api/auth/signin" className="pl-4">
-          <a data-active={isActive('/signup')}>Log in</a>
+          <a data-active={ isActive('/signup') }>Log in</a>
         </Link>
       </div>
     );
@@ -43,22 +43,22 @@ const Header = () => {
     left = (
       <div className="">
         <Link href="/">
-          <a className="bold" data-active={isActive('/')}>
+          <a className="bold" data-active={ isActive('/') }>
             Feed
           </a>
         </Link>
         <Link href="/exercises">
-          <a className="pl-4" data-active={isActive('/exercises')}>All Exercises</a>
+          <a className="pl-4" data-active={ isActive('/exercises') }>All Exercises</a>
         </Link>
         <Link href="/workouts">
-          <a className="pl-4" data-active={isActive('/workouts')}>All Workouts</a>
+          <a className="pl-4" data-active={ isActive('/workouts') }>All Workouts</a>
         </Link>
       </div>
     );
     right = (
       <div className="">
         <p className="inline-block">
-          {session.user.name} ({session.user.email})
+          { session.user.name } ({ session.user.email })
         </p>
         <Link href="/create/workout">
           <button className="pl-4">
@@ -70,7 +70,7 @@ const Header = () => {
             <a>Create Exercise</a>
           </button>
         </Link>
-        <button onClick={() => signOut()} className="pl-4">
+        <button onClick={ _ => signOut() } className="pl-4">
           <a>Log out</a>
         </button>
       </div>
@@ -79,8 +79,8 @@ const Header = () => {
 
   return (
     <nav className="flex justify-between p-10">
-      {left}
-      {right}
+      { left }
+      { right }
     </nav>
   );
 }
