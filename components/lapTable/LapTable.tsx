@@ -1,37 +1,33 @@
 import { FC, SyntheticEvent, useEffect, useState } from "react";
-import { uuid } from "uuidv4";
-import CreateExerciseRow from "./WorkoutRow";
-
-type UsedExercise = {
-  uuid: string;
-  exerciseId: string;
-  title: string;
-  reps: number;
-  timed: boolean;
-}
-
-type Exercise = {
-  id: string;
-  title?: string;
-}
+import { v4 as uuidv4 } from 'uuid';
+import { Exercise, UsedExerciseArrayItem } from "../../types";
+import LapRow from "./LapRow";
 
 type Props = {
-  uuid: string;
+  id: string;
   lapIndex: number;
+  exercises: UsedExerciseArrayItem[];
   exerciseList: Exercise[];
   onUpdate: Function;
   onDelete: Function;
 }
 
-const CreateWorkoutTable: FC<Props> = (props: Props) => {
+const LapTable: FC<Props> = (props: Props) => {
   const [showSelect, setShowSelect] = useState(false);
   const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(null);
-  const [data, setData] = useState<UsedExercise[]>([]);
+  const [data, setData] = useState<UsedExerciseArrayItem[]>(props.exercises ?? []);
 
-  const handleUpdate = (uuid: string, reps: number, timed: boolean) => {
+  const handleUpdate = (id: string, reps: number, timed: boolean) => {
     const newState = data.map(data => {
-      if (data.uuid === uuid) 
-        return {...data, reps, timed};
+      if (data.usedExercise.id === id) 
+        return {
+          usedExercise: {
+            exercise: data.usedExercise.exercise,
+            reps: reps,
+            timed: timed,
+            id
+          }
+        }
 
       return data;
     });
@@ -42,7 +38,7 @@ const CreateWorkoutTable: FC<Props> = (props: Props) => {
   const handleSelect = (e: SyntheticEvent) => {
     setSelectedExercise({
       id: (e.target as HTMLInputElement).value,
-      title: props.exerciseList.find(exercise => exercise.id === (e.target as HTMLInputElement).value)?.title
+      title: props.exerciseList.find(exercise => exercise.id === (e.target as HTMLInputElement).value)?.title ?? "Unknown exercise"
     });
   }
 
@@ -53,29 +49,29 @@ const CreateWorkoutTable: FC<Props> = (props: Props) => {
     if (selectedExercise === null)
       return;
 
-    const newExercise: UsedExercise = {
-      uuid: uuid(),
-      exerciseId: selectedExercise.id,
-      title: selectedExercise.title ?? "Unknown exercise",
-      reps: 0,
-      timed: false
+    const newExercise: UsedExerciseArrayItem = {
+      usedExercise: {
+        id: uuidv4(),
+        exercise: {
+          id: selectedExercise.id,
+          title: selectedExercise.title,
+          description: ""
+        },
+        reps: 0,
+        timed: false
+      }
     }
 
-    setData([...data, newExercise]);
+    setData(prevData => ([...prevData, newExercise]));
   }
 
-  const handleDeleteButton = (uuid: string) => {
-    setData((prevData) =>
-      prevData.filter((prevItem) => prevItem.uuid !== uuid)
-    );
+  const handleDeleteButton = (id: string) => {
+    setData(data.filter((prevData) => prevData.usedExercise.id !== id))
   }
 
-  useEffect(
-    () => {
-      props.onUpdate(props.uuid, data)
-    },
-    [data]
-  )
+  useEffect(() => {
+    props.onUpdate(props.id, data)
+  }, [data]) 
 
   return (
     <>
@@ -91,9 +87,9 @@ const CreateWorkoutTable: FC<Props> = (props: Props) => {
           </tr>
         </thead>
         <tbody>
-          {data.length > 0 && data.map((exercise: UsedExercise) => (
-            <CreateExerciseRow id={ exercise.uuid } title={ exercise.title } onUpdate={ handleUpdate } onDelete={ handleDeleteButton } key={ exercise.uuid } />
-          ))}
+          { data && data.map((exercise: UsedExerciseArrayItem, i: number) => (
+            <LapRow id={ exercise.usedExercise.id } title={ exercise.usedExercise.exercise.title } reps={ exercise.usedExercise.reps ?? 0 } timed={ exercise.usedExercise.timed ?? false } onUpdate={ handleUpdate } onDelete={ handleDeleteButton } key={ i } /> 
+          )) }
         </tbody>
         <tfoot>
           <tr>
@@ -104,18 +100,20 @@ const CreateWorkoutTable: FC<Props> = (props: Props) => {
                   <select
                     className="inline-block w-full xt-select rounded-md py-1 px-3.5 pr-20 text-gray-900 placeholder-black placeholder-opacity-75 bg-gray-100 transition focus:bg-gray-200 focus:outline-none"
                     aria-label="Select"
-                    onChange={ handleSelect }>
-                    <option disabled selected>Select an option</option>
-                    {props.exerciseList.map((exercise) => (
+                    onChange={ handleSelect }
+                    defaultValue="selected"
+                  >
+                    <option value="selected" disabled>Select an option</option>
+                    { props.exerciseList.map((exercise: Exercise) => (
                       <option value={ exercise.id } key={ exercise.id }>{ exercise.title }</option>
-                    ))}
+                    )) }
                   </select>
                 </div>
               }
-              <button className="add-button-sm" onClick={ handleAddExerciseButton } disabled={ (showSelect && selectedExercise === null) }>Add { !showSelect && "exercise" }</button>
+              <button className="add-button-sm" onClick={ handleAddExerciseButton } disabled={ (showSelect && selectedExercise === null) }>Add{ !showSelect && " exercise" }</button>
             </td>
             <td className="py-4 text-center">
-              <button className="delete-button-sm" onClick={ (e) => props.onDelete(e, props.uuid) }>Remove lap</button>
+              <button className="delete-button-sm" onClick={ e => props.onDelete(e, props.id) }>Remove lap</button>
             </td>
           </tr>
         </tfoot>
@@ -125,4 +123,4 @@ const CreateWorkoutTable: FC<Props> = (props: Props) => {
   );
 }
 
-export default CreateWorkoutTable;
+export default LapTable;
