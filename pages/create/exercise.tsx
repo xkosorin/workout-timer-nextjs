@@ -1,15 +1,28 @@
 import { NextPage } from "next";
+import { useSession } from "next-auth/react";
 import Router from "next/router";
 import React, { ChangeEvent, SyntheticEvent, useState } from "react";
 import Layout from "../../components/Layout";
+import { Exercise } from "../../types";
 
 const CreateExercise: NextPage = () => {
-  const [data, setData] = useState({
+  const [data, setData] = useState<Exercise>({
     title: "",
     description: "",
     mediaURL: "",
     mediaIsImage: false,
   });
+
+  const { status } = useSession();
+
+  if (status === "unauthenticated") {
+    return (
+      <Layout>
+        <pre>Access Denied</pre>
+      </Layout>
+    )
+  }
+
   const submitData = async (e: SyntheticEvent) => {
     e.preventDefault();
 
