@@ -1,20 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
 import prisma from "../../../lib/prisma";
-
-type Lap = {
-  uuid: string;
-  usedExercises: UsedExercise[];
-  exerciseCount: number;
-}
-
-type UsedExercise = {
-  uuid: string;
-  exerciseId: string;
-  title: string;
-  reps: number;
-  timed: boolean;
-}
+import { Lap } from "../../../types";
 
 interface ExtendedNextApiRequest extends NextApiRequest {
   body: {
@@ -27,8 +14,6 @@ interface ExtendedNextApiRequest extends NextApiRequest {
 
 export default async function handle(req: ExtendedNextApiRequest, res: NextApiResponse) {
   const { userId, title, description, laps } = req.body;
-  
-  console.log(laps);
 
   //const session = await getSession({ req });
   const result = await prisma.workout.create({
@@ -41,25 +26,24 @@ export default async function handle(req: ExtendedNextApiRequest, res: NextApiRe
       title: title,
       description: description,
       laps: {
-        create: laps.map((lap) => (
-          {
-            exercises: {
-              create: lap.usedExercises.map((exercise) => (
-                {
-                  usedExercise: {
-                    create: {
-                      exerciseId: exercise.exerciseId,
-                      amount: exercise.reps,
-                      timed: exercise.timed
+        create: laps.map((lap) => ({
+          exercises: {
+            create: lap.exercises.map((exercise) => ({
+              usedExercise: {
+                create: {
+                  exercise: {
+                    connect: {
+                      id: exercise.usedExercise.exercise.id
                     }
-                  }
+                  },
+                  reps: exercise.usedExercise.reps,
+                  timed: exercise.usedExercise.timed
                 }
-                
-              ))
-            },
-            exerciseCount: lap.usedExercises.length
-          }
-        ))
+              }
+            }))
+          },
+          exerciseCount: lap.exercises.length
+        }))
       }
     }
   });
