@@ -3,61 +3,49 @@ import React, { SyntheticEvent, useEffect, useState } from "react";
 import Layout from "../../components/Layout";
 import prisma from "../../lib/prisma";
 import { getSession, useSession } from "next-auth/react";
-import CreateWorkoutTable from "../../components/CreateWorkoutTable";
-import { uuid } from "uuidv4";
+import LapTable from "../../components/lapTable/LapTable";
+import { v4 as uuidv4 } from 'uuid';
 import Router from "next/router";
+import { Exercise, Lap, UsedExerciseArrayItem } from "../../types";
 
-type Workout = {
+type Props = {
+  exerciseList: Exercise[];
+}
+
+type State = {
   userId: string;
   title: string;
   description: string;
   laps: Lap[];
 }
 
-type Lap = {
-  uuid: string;
-  usedExercises: UsedExercise[];
-  exerciseCount: number;
-}
-
-type UsedExercise = {
-  uuid: string;
-  exerciseId: string;
-  title: string;
-  reps: number;
-  timed: boolean;
-}
-
-type Exercise = {
-  id: string;
-  title?: string;
-}
-
-type Props = {
-  exerciseList: Exercise[];
-  test: any;
-}
-
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   const session = await getSession({ req });
   if (!session) {
     res.statusCode = 403;
-    return { props: { exerciseList: [] } };
+    return { 
+      props: { 
+        exerciseList: [] 
+      } 
+    };
   }
 
   const exerciseList = await prisma.exercise.findMany();
 
-  return { props: { exerciseList: JSON.parse(JSON.stringify(exerciseList)) } };
+  return { 
+    props: { 
+      exerciseList: JSON.parse(JSON.stringify(exerciseList)) 
+    } 
+  };
 }
 
 const CreateWorkout: NextPage<Props> = (props) => {
-  const [workout, setWorkout] = useState<Workout>({
+  const [data, setData] = useState<State>({
     userId: "",
     title: "",
     description: "",
     laps: [],
-  });
-  const [laps, setLaps] = useState<Lap[]>([]);
+  })
 
   const { data: session, status } = useSession();
 
@@ -73,13 +61,13 @@ const CreateWorkout: NextPage<Props> = (props) => {
     e.preventDefault();
 
     try {
-      const body = { ...workout };
+      const body = { ...data };
       await fetch('/api/workout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
       });
-      await Router.push('/exercises');
+      await Router.push('/workouts');
     } catch (error) {
       console.error(error);
     }
@@ -89,51 +77,57 @@ const CreateWorkout: NextPage<Props> = (props) => {
     let name = e.currentTarget.name;
     let value = e.currentTarget.value;
 
-    setWorkout({
-      ...workout,
+    setData({
+      ...data,
       [name]: value
-    });
+    })
   }
 
   const handleAddLapButton = (e: SyntheticEvent) => {
     e.preventDefault();
 
     const newLap: Lap = {
-      uuid: uuid(),
-      usedExercises: [],
+      id: uuidv4(),
+      exercises: [],
       exerciseCount: 0
     }
 
-    setLaps([...laps, newLap]);
+    setData(prevData => ({
+      ...data,
+      laps: [...prevData.laps, newLap]
+    }))
   }
 
-  const handleUpdate = (uuid: string, exercises: UsedExercise[]) => {
-    const newState = laps.map(lap => {
-      if (lap.uuid === uuid) 
-        return {uuid: lap.uuid, usedExercises: exercises, exerciseCount: exercises.length};
+  const handleUpdate = (id: string, exercises: UsedExerciseArrayItem[]) => {
+    const newLaps = data.laps.map(lap => {
+      if (lap.id === id) 
+        return {id: lap.id, exercises: exercises, exerciseCount: exercises.length};
 
       return lap;
     });
 
-    setLaps(newState);
+    setData(prevData => ({
+      ...data,
+      laps: newLaps
+    }))
   }
 
-  const handleDeleteLapButton = (e: SyntheticEvent, uuid: string) => {
+  const handleDeleteLapButton = (e: SyntheticEvent, id: string) => {
     e.preventDefault();
 
-    setLaps((prevLaps) =>
-      prevLaps.filter((prevLap) => prevLap.uuid !== uuid)
-    );
+    setData(prevData => ({
+      ...data,
+      laps: prevData.laps.filter((prevLap) => prevLap.id !== id)
+    }))
   }
 
   useEffect(() => {
-    setWorkout({
-      ...workout,
-      // @ts-ignore
-      userId: session?.user.id,
-      laps
-    })
-  }, [session, laps])
+      setData({
+        ...data,
+        // @ts-ignore
+        userId: session?.user.id
+      })
+    }, [session]);
 
   return (
     <Layout>
@@ -148,12 +142,12 @@ const CreateWorkout: NextPage<Props> = (props) => {
           <textarea className="input-text" onChange={ handleInput } cols={ 30 } placeholder="Exercise description" rows={ 3 } id="description" name="description" />
         </div>
         <div className="mb-4">
-            {laps.map((lap, i) => (
-              <CreateWorkoutTable uuid={ lap.uuid } lapIndex={ i } exerciseList={ props.exerciseList } onUpdate={ handleUpdate } onDelete={ handleDeleteLapButton } key={ lap.uuid } />
+            {data.laps.map((lap, i) => (
+              <LapTable id={ lap.id } lapIndex={ i } exercises={ [] } exerciseList={ props.exerciseList } onUpdate={ handleUpdate } onDelete={ handleDeleteLapButton } key={ lap.id } />
             ))}
         </div>
         <button className="add-button" onClick={ handleAddLapButton }>Add lap</button>
-        <input className="ml-4 send-button" disabled={ laps.length == 0 || laps[0].exerciseCount == 0 || !workout.title } type="submit" value="Create workout" />
+        <input className="ml-4 send-button" disabled={ data.laps.length == 0 || data.laps[0].exerciseCount == 0 || !data.title } type="submit" value="Create workout" />
       </form>
     </Layout>
   );
