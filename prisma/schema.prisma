@@ -98,7 +98,7 @@ model UsedExercise {
   id         String   @id @default(cuid())
   exerciseId String
   timed      Boolean
-  amount     Int
+  reps       Int
   updatedAt  DateTime @updatedAt
 
   laps LapOnUsedExercise[]
