@@ -1,6 +1,8 @@
 import { GetServerSideProps, NextPage } from "next";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import Router from "next/router";
+import { SyntheticEvent } from "react";
 import Layout from "../../../components/Layout";
 import prisma from '../../../lib/prisma'
 import { Lap, UsedExerciseArrayItem, Workout } from "../../../types";
@@ -58,11 +60,24 @@ const Workout: NextPage<Props> = (props: Props) => {
   const { data: session, status } = useSession();
   let options;
 
+  const handleDeleteButton = async(e: SyntheticEvent, id: string) => {
+    e.preventDefault();
+
+    try {
+      await fetch(`/api/workout/${id}`, {
+        method: 'DELETE',
+      });
+      await Router.push('/workouts');
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   // @ts-ignore
   if (status === "authenticated" && session.user.id === props.workout.user.id) {
     options = <>
       <Link href="/" ><a className="add-button mr-2">Edit workout</a></Link>
-      <Link href="/" ><a className="delete-button">Delete workout</a></Link>
+      <button onClick={ e => handleDeleteButton(e, props.workout.id) } className="delete-button">Delete Workout</button>
     </>;
   }
 
