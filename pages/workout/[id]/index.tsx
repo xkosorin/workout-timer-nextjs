@@ -76,7 +76,7 @@ const Workout: NextPage<Props> = (props: Props) => {
   // @ts-ignore
   if (status === "authenticated" && session.user.id === props.workout.user.id) {
     options = <>
-      <Link href="/" ><a className="add-button mr-2">Edit workout</a></Link>
+      <Link href={ "/workout/" + props.workout.id + "/edit" }><a className="add-button mr-2">Edit workout</a></Link>
       <button onClick={ e => handleDeleteButton(e, props.workout.id) } className="delete-button">Delete Workout</button>
     </>;
   }
