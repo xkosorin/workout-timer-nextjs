@@ -50,7 +50,7 @@ const Exercise: NextPage<Props> = (props: Props) => {
   }
 
   options = <>
-    <Link href="/" ><a className="add-button mr-2">Edit exercise</a></Link>
+    <Link href={ "/exercise/" + props.exercise.id + "/edit" }><a className="add-button mr-2">Edit exercise</a></Link>
     <button onClick={ e => handleDeleteButton(e, props.exercise.id!) } className="delete-button">Delete exercise</button>
   </>;
 
