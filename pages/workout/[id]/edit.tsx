@@ -6,6 +6,7 @@ import Layout from "../../../components/Layout";
 import prisma from "../../../lib/prisma";
 import { v4 as uuidv4 } from 'uuid';
 import { Exercise, Lap, UsedExerciseArrayItem } from "../../../types";
+import Router from "next/router";
 
 type Props = {
   workout: State;
@@ -13,6 +14,7 @@ type Props = {
 }
 
 type State = {
+  id: string;
   title: string;
   description: string;
   laps: Lap[];
@@ -35,6 +37,7 @@ export const getServerSideProps: GetServerSideProps<any> = async ({ params, req,
       id: String(params?.id),
     },
     select: {
+      id: true,
       title: true,
       description: true,
       laps: {
@@ -74,6 +77,21 @@ export const getServerSideProps: GetServerSideProps<any> = async ({ params, req,
 const EditWorkout: NextPage<Props> = (props: Props) => {
   const [data, setData] = useState<State>(props.workout)
 
+  const handleEditButton = async(e: SyntheticEvent, id: string) => {
+    e.preventDefault();
+
+    try {
+      await fetch(`/api/workout/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      await Router.push('/workouts');
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   const handleInput = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>) => {
     let name = e.currentTarget.name;
     let value = e.currentTarget.value;
@@ -94,8 +112,7 @@ const EditWorkout: NextPage<Props> = (props: Props) => {
     }
 
     setData(prevData => ({
-      title: prevData.title,
-      description: prevData.description,
+      ...prevData,
       laps: [...prevData.laps, newLap]
     }));
   }
@@ -109,8 +126,7 @@ const EditWorkout: NextPage<Props> = (props: Props) => {
     });
 
     setData(prevData => ({
-      title: prevData.title,
-      description: prevData.description,
+      ...prevData,
       laps: newLaps
     }));
   }
@@ -121,14 +137,14 @@ const EditWorkout: NextPage<Props> = (props: Props) => {
     const newLaps = data.laps.filter((prevLap) => prevLap.id !== id);
 
     setData(prevData => ({
-      ...newLaps,
-      ...prevData
+      ...prevData,
+      laps: newLaps
     }));
   } 
 
   return(
     <Layout>
-      <form>
+      <form onSubmit={ e => handleEditButton(e, data.id) }>
         <h2 className="p-10 pl-0 text-xl">Add new workout to database</h2>
         <div className="mb-4">
           <label className="input-label" htmlFor="title">Workout title</label>
@@ -146,7 +162,7 @@ const EditWorkout: NextPage<Props> = (props: Props) => {
         }
         </div>
         <button className="add-button" onClick={ handleAddLapButton }>Add lap</button>
-        <input className="ml-4 send-button"type="submit" value="Create workout" />
+        <input className="ml-4 send-button"type="submit" value="Edit workout" />
       </form>
     </Layout>
   );
