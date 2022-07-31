@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
 import prisma from "../../../lib/prisma";
-import { Lap } from "../../../types";
+import { Lap, UsedExerciseArrayItem } from "../../../types";
 
 interface ExtendedNextApiRequest extends NextApiRequest {
   body: {
@@ -28,7 +28,7 @@ export default async function handle(req: ExtendedNextApiRequest, res: NextApiRe
       laps: {
         create: laps.map((lap) => ({
           exercises: {
-            create: lap.exercises.map((exercise) => ({
+            create: lap.exercises.map((exercise: UsedExerciseArrayItem) => ({
               usedExercise: {
                 create: {
                   exercise: {
