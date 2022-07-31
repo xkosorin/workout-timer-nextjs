@@ -1,4 +1,4 @@
-import { FC, SyntheticEvent, useEffect, useState } from "react";
+import { FC, SyntheticEvent, useEffect, useRef, useState } from "react";
 import { v4 as uuidv4 } from 'uuid';
 import { Exercise, UsedExerciseArrayItem } from "../../types";
 import LapRow from "./LapRow";
@@ -16,6 +16,7 @@ const LapTable: FC<Props> = (props: Props) => {
   const [showSelect, setShowSelect] = useState(false);
   const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(null);
   const [data, setData] = useState<UsedExerciseArrayItem[]>(props.exercises ?? []);
+  const isLoaded = useRef(false)
 
   const handleUpdate = (id: string, reps: number, timed: boolean) => {
     const newState = data.map(data => {
@@ -70,7 +71,11 @@ const LapTable: FC<Props> = (props: Props) => {
   }
 
   useEffect(() => {
-    props.onUpdate(props.id, data)
+    if (isLoaded.current) {
+      props.onUpdate(props.id, data)
+    } else {
+      isLoaded.current = true;
+    }
   }, [data]) 
 
   return (
