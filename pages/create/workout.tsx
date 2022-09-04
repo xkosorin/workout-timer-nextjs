@@ -49,14 +49,6 @@ const CreateWorkout: NextPage<Props> = (props) => {
 
   const { data: session, status } = useSession();
 
-  if (status === "unauthenticated") {
-    return (
-      <Layout>
-        <pre>Access Denied</pre>
-      </Layout>
-    )
-  }
-
   const submitData = async(e: SyntheticEvent) => {
     e.preventDefault();
 
@@ -127,7 +119,16 @@ const CreateWorkout: NextPage<Props> = (props) => {
         // @ts-ignore
         userId: session?.user.id
       })
-    }, [session]);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [session]); 
+
+  if (status === "unauthenticated") {
+    return (
+      <Layout>
+        <pre>Access Denied</pre>
+      </Layout>
+    )
+  }
 
   return (
     <Layout>

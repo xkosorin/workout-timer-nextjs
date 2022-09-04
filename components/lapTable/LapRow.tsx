@@ -39,6 +39,7 @@ const LapRow: FC<Props> = (props: Props) => {
     () => {
       props.onUpdate(props.id, reps, timed)
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [reps, timed]
   )
 
