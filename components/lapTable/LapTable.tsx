@@ -76,6 +76,7 @@ const LapTable: FC<Props> = (props: Props) => {
     } else {
       isLoaded.current = true;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]) 
 
   return (
