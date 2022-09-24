@@ -30,7 +30,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
 const Exercises: NextPage<Props> = (props: Props) => {
   return(
     <Layout>
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
       {
         props.exercises.map((exercise: Exercise, i: number) => {
           return (

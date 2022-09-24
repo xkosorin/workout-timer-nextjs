@@ -56,10 +56,10 @@ const Exercise: NextPage<Props> = (props: Props) => {
 
   return (
     <Layout>
-      <div>
-        <div className="flex justify-between">
-          <h3>{ props.exercise.title }</h3>
-          <span>{ options }</span>
+      <div className="grid grid-cols-1 md:grid-cols-2 px-2 md:px-0">
+        <div className="flex flex-col md:flex-row md:col-span-2">
+          <h3 className="order-2 md:order-1">{ props.exercise.title }</h3>
+          <span className="ml-0 md:ml-auto order-1 md:order-2">{ options }</span>
         </div>
         <p>{ props.exercise.description }</p>
         { props.exercise.mediaURL ? <Image src={ props.exercise.mediaURL } alt="Test" width={ 600 } height={ 600 } /> : "" }
