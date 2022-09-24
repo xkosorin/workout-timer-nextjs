@@ -19,5 +19,23 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
       })
 
       res.status(200).json(transaction)
+
+    case 'PUT':
+      let { title, description, mediaIsImage, mediaURL } = req.body;
+      let updateTransaction;
+      
+      try {
+        updateTransaction = await prisma.exercise.update({
+          where: {
+            id: id,
+          },
+          data: { title, description, mediaIsImage, mediaURL },
+        });
+      } catch (e) {
+        console.error(e)
+        res.status(500)
+      }
+
+      res.status(200).json(updateTransaction)
   }
 }
