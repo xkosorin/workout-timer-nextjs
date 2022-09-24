@@ -7,6 +7,7 @@ import prisma from "../../../lib/prisma";
 import { v4 as uuidv4 } from 'uuid';
 import { Exercise, Lap, UsedExerciseArrayItem } from "../../../types";
 import Router from "next/router";
+import Auth from "../../../components/Auth";
 
 type Props = {
   workout: State;
@@ -144,26 +145,28 @@ const EditWorkout: NextPage<Props> = (props: Props) => {
 
   return(
     <Layout>
-      <form onSubmit={ e => handleEditButton(e, data.id) }>
-        <h2 className="p-10 pl-0 text-xl">Add new workout to database</h2>
-        <div className="mb-4">
-          <label className="input-label" htmlFor="title">Workout title</label>
-          <input className="input-text" onChange={ handleInput } autoFocus type="text" placeholder="Exercise title" id="title" name="title" value={ data.title } />
-        </div>
-        <div className="mb-4">
-          <label className="input-label" htmlFor="description">Exercise description</label>
-          <textarea className="input-text" onChange={ handleInput } cols={ 30 } placeholder="Exercise description" rows={ 3 } id="description" name="description" value={ data.description } />
-        </div>
-        <div className="mb-4">
-        { 
-          data.laps && data.laps.map((lap: Lap, i: number) => (
-            <LapTable id={ lap.id } lapIndex={ i } exercises={ lap.exercises } exerciseList={ props.exerciseList } onUpdate={ handleUpdate } onDelete={ handleDeleteLapButton } key={ lap.id } />
-          )) 
-        }
-        </div>
-        <button className="add-button" onClick={ handleAddLapButton }>Add lap</button>
-        <input className="ml-4 send-button"type="submit" value="Edit workout" />
-      </form>
+      <Auth>
+        <form onSubmit={ e => handleEditButton(e, data.id) }>
+          <h2 className="p-10 pl-0 text-xl">Add new workout to database</h2>
+          <div className="mb-4">
+            <label className="input-label" htmlFor="title">Workout title</label>
+            <input className="input-text" onChange={ handleInput } autoFocus type="text" placeholder="Exercise title" id="title" name="title" value={ data.title } />
+          </div>
+          <div className="mb-4">
+            <label className="input-label" htmlFor="description">Exercise description</label>
+            <textarea className="input-text" onChange={ handleInput } cols={ 30 } placeholder="Exercise description" rows={ 3 } id="description" name="description" value={ data.description } />
+          </div>
+          <div className="mb-4">
+          { 
+            data.laps && data.laps.map((lap: Lap, i: number) => (
+              <LapTable id={ lap.id } lapIndex={ i } exercises={ lap.exercises } exerciseList={ props.exerciseList } onUpdate={ handleUpdate } onDelete={ handleDeleteLapButton } key={ lap.id } />
+            )) 
+          }
+          </div>
+          <button className="add-button" onClick={ handleAddLapButton }>Add lap</button>
+          <input className="ml-4 send-button"type="submit" value="Edit workout" />
+        </form>
+      </Auth>
     </Layout>
   );
 }
