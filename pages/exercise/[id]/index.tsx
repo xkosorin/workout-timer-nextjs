@@ -49,10 +49,14 @@ const Exercise: NextPage<Props> = (props: Props) => {
     }
   }
 
-  options = <>
-    <Link href={ "/exercise/" + props.exercise.id + "/edit" }><a className="add-button mr-2">Edit exercise</a></Link>
-    <button onClick={ e => handleDeleteButton(e, props.exercise.id!) } className="delete-button">Delete exercise</button>
-  </>;
+  if (status === "authenticated") {
+    if (session.user.role == "admin") {
+      options = <>
+        <Link href={ "/exercise/" + props.exercise.id + "/edit" }><a className="add-button mr-2">Edit exercise</a></Link>
+        <button onClick={ e => handleDeleteButton(e, props.exercise.id!) } className="delete-button">Delete exercise</button>
+      </>;
+    }
+  }
 
   return (
     <Layout>
