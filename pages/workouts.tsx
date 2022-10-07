@@ -1,4 +1,5 @@
-import { GetServerSideProps, NextPage } from "next";
+import { GetServerSideProps, GetServerSidePropsContext, NextPage } from "next";
+import { getSession } from "next-auth/react";
 import Link from "next/link";
 import Layout from "../components/Layout";
 import prisma from '../lib/prisma'
@@ -6,24 +7,6 @@ import { Workout } from "../types";
 
 type Props = {
   workouts: Workout[]
-}
-
-export const getServerSideProps: GetServerSideProps = async () => {
-  const res = await prisma.workout.findMany({
-    select: {
-      id: true,
-      title: true,
-      description: true,
-      laps: true,
-      user: true
-    }
-  });
-
-  return {
-    props: {
-      workouts: JSON.parse(JSON.stringify(res))
-    }
-  };
 }
 
 const Workouts: NextPage<Props> = (props: Props) => {
@@ -43,6 +26,35 @@ const Workouts: NextPage<Props> = (props: Props) => {
       </div>
     </Layout>
   )
+}
+
+export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext) => {
+  const session = await getSession(context)
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: '/404',
+        permanent: false,
+      },
+    }
+  }
+
+  const res = await prisma.workout.findMany({
+    select: {
+      id: true,
+      title: true,
+      description: true,
+      laps: true,
+      user: true
+    }
+  });
+
+  return {
+    props: {
+      workouts: JSON.parse(JSON.stringify(res))
+    }
+  };
 }
 
 export default Workouts;
