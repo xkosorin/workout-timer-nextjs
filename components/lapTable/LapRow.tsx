@@ -5,8 +5,8 @@ type Props = {
   title: string;
   reps: number;
   timed: boolean;
-  onUpdate: Function;
-  onDelete: Function;
+  onUpdate(id: string, reps: number, timed: boolean): void;
+  onDelete(id: string): void;
 }
 
 const LapRow: FC<Props> = (props: Props) => {

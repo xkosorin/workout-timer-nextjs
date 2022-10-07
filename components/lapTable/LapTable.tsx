@@ -8,8 +8,8 @@ type Props = {
   lapIndex: number;
   exercises: UsedExerciseArrayItem[];
   exerciseList: Exercise[];
-  onUpdate: Function;
-  onDelete: Function;
+  onUpdate(id: string, exercises: UsedExerciseArrayItem[]): void;
+  onDelete(e: SyntheticEvent, id: string): void;
 }
 
 const LapTable: FC<Props> = (props: Props) => {
