@@ -22,6 +22,8 @@ const options = {
   callbacks: {
     // @ts-ignore
     session: async ({ session, user }) => {
+      session.user.role = user.role;
+
       return {
         ...session,
         user: user,
