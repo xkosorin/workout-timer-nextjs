@@ -43,3 +43,25 @@
     margin: 0;
   }
 }
+
+.modal-overlay {
+  z-index: 9998;
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-box {
+  z-index: 9998;
+  display: block;
+  background: white;
+  padding: 1rem;
+  border-radius: 1rem;
+}
+
