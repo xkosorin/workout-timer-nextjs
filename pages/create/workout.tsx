@@ -19,26 +19,6 @@ type State = {
   laps: Lap[];
 }
 
-export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-  const session = await getSession({ req });
-  if (!session) {
-    res.statusCode = 403;
-    return { 
-      props: { 
-        exerciseList: [] 
-      } 
-    };
-  }
-
-  const exerciseList = await prisma.exercise.findMany();
-
-  return { 
-    props: { 
-      exerciseList: JSON.parse(JSON.stringify(exerciseList)) 
-    } 
-  };
-}
-
 const CreateWorkout: NextPage<Props> = (props) => {
   const [data, setData] = useState<State>({
     userId: "",
@@ -147,11 +127,33 @@ const CreateWorkout: NextPage<Props> = (props) => {
               <LapTable id={ lap.id } lapIndex={ i } exercises={ [] } exerciseList={ props.exerciseList } onUpdate={ handleUpdate } onDelete={ handleDeleteLapButton } key={ lap.id } />
             ))}
         </div>
-        <button className="add-button" onClick={ handleAddLapButton }>Add lap</button>
-        <input className="ml-4 send-button" disabled={ data.laps.length == 0 || data.laps[0].exerciseCount == 0 || !data.title } type="submit" value="Create workout" />
+        <div className="flex">
+          <button className="add-button" onClick={ handleAddLapButton }>Add lap</button>
+          <input className="ml-4 send-button" disabled={ data.laps.length == 0 || data.laps[0].exerciseCount == 0 || !data.title } type="submit" value="Create workout" />
+        </div>
       </form>
     </Layout>
   );
+}
+
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+  const session = await getSession({ req });
+  if (!session) {
+    res.statusCode = 403;
+    return { 
+      props: { 
+        exerciseList: [] 
+      } 
+    };
+  }
+
+  const exerciseList = await prisma.exercise.findMany();
+
+  return { 
+    props: { 
+      exerciseList: JSON.parse(JSON.stringify(exerciseList)) 
+    } 
+  };
 }
 
 export default CreateWorkout;
