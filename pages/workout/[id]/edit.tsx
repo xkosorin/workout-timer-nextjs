@@ -5,7 +5,7 @@ import LapTable from "../../../components/lapTable/LapTable";
 import Layout from "../../../components/Layout";
 import prisma from "../../../lib/prisma";
 import { v4 as uuidv4 } from 'uuid';
-import { Exercise, Lap, UsedExerciseArrayItem } from "../../../types";
+import { Exercise, Lap, UsedExerciseArrayItem, Workout } from "../../../types";
 import Router from "next/router";
 import Auth from "../../../components/Auth";
 
@@ -14,66 +14,7 @@ type Props = {
   exerciseList: Exercise[];
 }
 
-type State = {
-  id: string;
-  title: string;
-  description: string;
-  laps: Lap[];
-}
-
-export const getServerSideProps: GetServerSideProps<any> = async ({ params, req, res }) => {
-  const session = await getSession({ req });
-  if (!session) {
-    res.statusCode = 403;
-    return { 
-      props: { 
-        exerciseList: [] 
-      } 
-    };
-  }
-
-  const exerciseList = await prisma.exercise.findMany();
-  const workout = await prisma.workout.findUnique({
-    where: {
-      id: String(params?.id),
-    },
-    select: {
-      id: true,
-      title: true,
-      description: true,
-      laps: {
-        select: {
-          exercises: {
-            select: {
-              usedExercise: {
-                select: {
-                  id: true,
-                  timed: true,
-                  reps: true,
-                  exercise: {
-                    select: {
-                      title: true,
-                      description: true
-                    }
-                  }
-                }
-              }
-            }
-          },
-          exerciseCount: true,
-          id: true
-        }
-      }
-    }
-  });
-
-  return { 
-    props: { 
-      workout,
-      exerciseList: JSON.parse(JSON.stringify(exerciseList)) 
-    } 
-  }
-}
+type State = Omit<Workout, "user">
 
 const EditWorkout: NextPage<Props> = (props: Props) => {
   const [data, setData] = useState<State>(props.workout)
@@ -147,7 +88,7 @@ const EditWorkout: NextPage<Props> = (props: Props) => {
     <Layout>
       <Auth>
         <form onSubmit={ e => handleEditButton(e, data.id) }>
-          <h2 className="p-10 pl-0 text-xl">Add new workout to database</h2>
+          <h2 className="p-10 pl-0 text-xl">Edit workout - { props.workout.title }</h2>
           <div className="mb-4">
             <label className="input-label" htmlFor="title">Workout title</label>
             <input className="input-text" onChange={ handleInput } autoFocus type="text" placeholder="Exercise title" id="title" name="title" value={ data.title } />
@@ -169,6 +110,60 @@ const EditWorkout: NextPage<Props> = (props: Props) => {
       </Auth>
     </Layout>
   );
+}
+
+export const getServerSideProps: GetServerSideProps<any> = async ({ params, req, res }) => {
+  const session = await getSession({ req });
+  if (!session) {
+    res.statusCode = 403;
+    return { 
+      props: { 
+        exerciseList: [] 
+      } 
+    };
+  }
+
+  const exerciseList = await prisma.exercise.findMany();
+  const workout = await prisma.workout.findUnique({
+    where: {
+      id: String(params?.id),
+    },
+    select: {
+      id: true,
+      title: true,
+      description: true,
+      laps: {
+        select: {
+          exercises: {
+            select: {
+              usedExercise: {
+                select: {
+                  id: true,
+                  timed: true,
+                  reps: true,
+                  exercise: {
+                    select: {
+                      title: true,
+                      description: true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          exerciseCount: true,
+          id: true
+        }
+      }
+    }
+  });
+
+  return { 
+    props: { 
+      workout,
+      exerciseList: JSON.parse(JSON.stringify(exerciseList)) 
+    } 
+  }
 }
 
 export default EditWorkout;
