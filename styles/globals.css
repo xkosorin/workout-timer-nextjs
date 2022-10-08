@@ -16,23 +16,39 @@
   }
 
   .add-button {
-    @apply hover:bg-transparent bg-blue-500 hover:text-blue-700 font-semibold text-white py-2 px-4 border hover:border-blue-500 border-transparent rounded transition-colors;
+    @apply hover:bg-transparent bg-blue-500 hover:bg-blue-400 font-semibold text-white py-2 px-4 border-b-4 border-blue-700 active:border-b-0 active:mt-[4px] rounded transition-all h-11 active:h-10 duration-75;
   }
 
   .add-button-sm {
-    @apply hover:bg-transparent bg-blue-500 hover:text-blue-700 font-semibold text-white py-1 px-2 border hover:border-blue-500 border-transparent rounded transition-colors text-sm;
+    @apply hover:bg-transparent bg-blue-500 hover:bg-blue-400 font-semibold text-white py-1 px-2 border-b-[3px] border-blue-700 active:border-b-0 active:mt-[3px] rounded text-sm transition-all h-8 active:h-7 duration-75;
   }
 
   .send-button {
-    @apply hover:bg-transparent bg-green-600 hover:text-green-600 font-semibold text-white py-2 px-4 border border-green-700 hover:border-green-600 rounded transition-colors;
+    @apply hover:bg-transparent bg-green-600 hover:bg-green-500 font-semibold text-white py-2 px-4 border-b-4 border-green-800 active:border-b-0 active:mt-[4px] rounded transition-all h-11 active:h-10 duration-75;
   }
 
   .delete-button {
-    @apply hover:bg-transparent bg-red-600 hover:text-red-600 font-semibold text-white py-2 px-4 border border-red-700 hover:border-red-600 rounded transition-colors;
+    @apply hover:bg-transparent bg-red-600 hover:bg-red-500 font-semibold text-white py-2 px-4 border-b-4 border-red-800 active:border-b-0 active:mt-[4px] rounded transition-all h-11 active:h-10 duration-75;
   }
 
   .delete-button-sm {
-    @apply hover:bg-transparent bg-red-600 hover:text-red-600 font-semibold text-white py-1 px-2 border border-red-700 hover:border-red-600 rounded transition-colors text-sm;
+    @apply hover:bg-transparent bg-red-600 hover:bg-red-500 font-semibold text-white py-1 px-2 border-b-[3px] border-red-800 active:border-b-0 active:mt-[3px] rounded transition-all text-sm h-8 active:h-7 duration-75;
+  }
+
+  .start-button {
+    @apply inline-flex justify-center items-center gap-x-3 h-16 md:h-10 md:w-28 w-4/5 px-5 m-2 text-base text-white transition-all bg-green-600 rounded hover:bg-green-500 border-b-4 border-green-900 active:border-b-0 active:h-[60px] md:active:h-9 active:mt-3 duration-75;
+  }
+
+  .pause-button {
+    @apply inline-flex justify-center items-center gap-x-3 h-16 md:h-10 md:w-28 w-4/5 px-5 m-2 text-base text-white transition-all bg-orange-500 rounded hover:bg-orange-600 border-b-4 border-orange-800 active:border-b-0 active:h-[60px] md:active:h-9 active:mt-3 duration-75;
+  }
+
+  .restart-button {
+    @apply inline-flex justify-center items-center gap-x-3 h-16 md:h-10 md:w-28 w-4/5 px-5 m-2 text-base bg-gray-500 hover:bg-gray-400 border-b-4 border-gray-700 hover:border-gray-500 text-white text-center rounded active:border-b-0 active:h-[60px] md:active:h-9 active:mt-3 duration-75;
+  }
+
+  .primary-button {
+    @apply inline-flex items-center justify-center gap-x-1 h-10 md:w-64 w-1/2 m-2 text-white transition-all duration-75 bg-blue-500 rounded hover:bg-blue-400 border-b-4 border-blue-700 active:border-b-0 active:h-9 active:mt-3;
   }
 }
 
