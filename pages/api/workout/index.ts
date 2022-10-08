@@ -15,7 +15,15 @@ interface ExtendedNextApiRequest extends NextApiRequest {
 export default async function handle(req: ExtendedNextApiRequest, res: NextApiResponse) {
   const { userId, title, description, laps } = req.body;
 
-  //const session = await getSession({ req });
+  const session = await getSession({ req });
+
+  if (!session) {
+    res.status(403).json({
+      message:
+        'You must be sign in to view the protected content on this page.',
+    })
+  }
+
   const result = await prisma.workout.create({
     data: {
       user: {
