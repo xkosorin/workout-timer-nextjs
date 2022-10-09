@@ -101,6 +101,9 @@ model UsedExercise {
   exerciseId String
   timed      Boolean
   reps       Int
+  pause      Int      @default(0)
+  timing     String?
+  comment    String?
   updatedAt  DateTime @updatedAt
 
   laps LapOnUsedExercise[]
