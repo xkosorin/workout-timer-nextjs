@@ -1,7 +1,7 @@
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { NextApiHandler } from "next";
 import NextAuth from "next-auth";
-import GitHubProvider from 'next-auth/providers/github';
+import GitHubProvider from "next-auth/providers/github";
 import EmailProvider from "next-auth/providers/email";
 import prisma from "../../../lib/prisma";
 
@@ -16,7 +16,7 @@ const options = {
     }),
     EmailProvider({
       server: process.env.EMAIL_SERVER,
-      from: process.env.EMAIL_FROM
+      from: process.env.EMAIL_FROM,
     }),
   ],
   callbacks: {
