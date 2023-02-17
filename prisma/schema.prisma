@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgres"
   url      = env("DATABASE_URL")
 }
 
@@ -48,9 +48,10 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  accounts Account[]
-  sessions Session[]
-  workouts Workout[]
+  accounts           Account[]
+  sessions           Session[]
+  workouts           Workout[]
+  accessibleWorkouts UserOnWorkout[]
 }
 
 model VerificationToken {
@@ -66,11 +67,13 @@ model Workout {
   userId      String
   title       String   @unique
   description String?
+  public      Boolean  @default(true)
   updatedAt   DateTime @updatedAt
 
   laps Lap[]
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdBy    User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessibleBy UserOnWorkout[]
 }
 
 model Lap {
@@ -119,4 +122,15 @@ model LapOnUsedExercise {
   usedExercise UsedExercise @relation(fields: [usedExerciseId], references: [id], onDelete: Cascade)
 
   @@id([lapId, usedExerciseId])
+}
+
+model UserOnWorkout {
+  workoutId String
+  userId    String
+  updatedAt DateTime @updatedAt
+
+  workout Workout @relation(fields: [workoutId], references: [id], onDelete: Restrict)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+  @@id([workoutId, userId])
 }
