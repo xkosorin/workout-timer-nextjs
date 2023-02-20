@@ -31,7 +31,10 @@ const Workout: NextPage<Props> = (props: Props) => {
     }
   };
 
-  if (status === "authenticated" && session.user.id === props.workout.user.id) {
+  if (
+    status === "authenticated" &&
+    session.user.id === props.workout.createdBy.id
+  ) {
     options = (
       <div className="flex">
         <Link href={"/workout/" + props.workout.id + "/edit"}>
@@ -132,6 +135,7 @@ export const getServerSideProps: GetServerSideProps<any> = async (
     select: {
       id: true,
       title: true,
+      isPublic: true,
       description: true,
       laps: {
         select: {

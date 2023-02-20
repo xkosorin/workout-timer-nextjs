@@ -31,5 +31,5 @@ export type Workout = {
   isPublic: boolean;
   description: string;
   laps: Lap[];
-  user: User;
+  createdBy: User;
 };
