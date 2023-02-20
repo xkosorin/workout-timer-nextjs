@@ -67,7 +67,7 @@ model Workout {
   userId      String
   title       String   @unique
   description String?
-  public      Boolean  @default(true)
+  isPublic    Boolean  @default(true)
   updatedAt   DateTime @updatedAt
 
   laps Lap[]
