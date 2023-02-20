@@ -1,4 +1,5 @@
 import { GetServerSideProps, GetServerSidePropsContext, NextPage } from "next";
+import { Session } from "next-auth";
 import { getSession } from "next-auth/react";
 import Link from "next/link";
 import Layout from "../components/Layout";
@@ -7,6 +8,7 @@ import { Workout } from "../types";
 
 type Props = {
   workouts: Workout[];
+  session: Session;
 };
 
 const Workouts: NextPage<Props> = (props: Props) => {
@@ -15,19 +17,21 @@ const Workouts: NextPage<Props> = (props: Props) => {
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         {props.workouts.map((workout: Workout, i: number) => {
           return (
-            <div key={i} className="flex flex-col items-center">
-              <Link href={"/workout/" + workout.id}>
-                <h3
-                  key={i}
-                  className="uppercase text-lg text-gray-600 font-semibold flex-1"
-                >
-                  {workout.title}
-                </h3>
-              </Link>
-              <p className="text-sm font-light text-slate-400">
-                {workout.description}
-              </p>
-            </div>
+            (workout.isPublic || workout.userId === props.session.user.id) && (
+              <div key={i} className="flex flex-col items-center">
+                <Link href={"/workout/" + workout.id}>
+                  <h3
+                    key={i}
+                    className="uppercase text-lg text-gray-600 font-semibold flex-1"
+                  >
+                    {workout.title}
+                  </h3>
+                </Link>
+                <p className="text-sm font-light text-slate-400">
+                  {workout.description}
+                </p>
+              </div>
+            )
           );
         })}
       </div>
@@ -53,6 +57,7 @@ export const getServerSideProps: GetServerSideProps = async (
     select: {
       id: true,
       title: true,
+      isPublic: true,
       description: true,
       laps: true,
       userId: true,
@@ -62,6 +67,7 @@ export const getServerSideProps: GetServerSideProps = async (
   return {
     props: {
       workouts: JSON.parse(JSON.stringify(res)),
+      session: session,
     },
   };
 };
