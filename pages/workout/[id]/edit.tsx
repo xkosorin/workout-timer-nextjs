@@ -4,7 +4,7 @@ import { SyntheticEvent, useState } from "react";
 import LapTable from "../../../components/lapTable/LapTable";
 import Layout from "../../../components/Layout";
 import prisma from "../../../lib/prisma";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 import { Exercise, Lap, UsedExerciseArrayItem, Workout } from "../../../types";
 import Router from "next/router";
 import Auth from "../../../components/Auth";
@@ -12,37 +12,51 @@ import Auth from "../../../components/Auth";
 type Props = {
   workout: State;
   exerciseList: Exercise[];
-}
+};
 
-type State = Omit<Workout, "user">
+type State = Omit<Workout, "createdBy">;
 
 const EditWorkout: NextPage<Props> = (props: Props) => {
-  const [data, setData] = useState<State>(props.workout)
+  const [data, setData] = useState<State>(props.workout);
 
-  const handleEditButton = async(e: SyntheticEvent, id: string) => {
+  const handleEditButton = async (e: SyntheticEvent, id: string) => {
     e.preventDefault();
 
     try {
       await fetch(`/api/workout/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
-      await Router.push('/workouts');
+      await Router.push("/workouts");
     } catch (error) {
       console.error(error);
     }
-  }
+  };
 
-  const handleInput = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleInput = (
+    e:
+      | React.ChangeEvent<HTMLInputElement>
+      | React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
     let name = e.currentTarget.name;
     let value = e.currentTarget.value;
 
     setData((prevData) => ({
       ...prevData,
-      [name]: value
-    }))
-  }
+      [name]: value,
+    }));
+  };
+
+  const handleToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let name = e.currentTarget.name;
+    let value = e.currentTarget.checked;
+
+    setData({
+      ...data,
+      [name]: value,
+    });
+  };
 
   const handleAddLapButton = (e: SyntheticEvent) => {
     e.preventDefault();
@@ -50,76 +64,134 @@ const EditWorkout: NextPage<Props> = (props: Props) => {
     const newLap: Lap = {
       id: uuidv4(),
       exercises: [],
-      exerciseCount: 0
-    }
+      exerciseCount: 0,
+    };
 
-    setData(prevData => ({
+    setData((prevData) => ({
       ...prevData,
-      laps: [...prevData.laps, newLap]
+      laps: [...prevData.laps, newLap],
     }));
-  }
+  };
 
   const handleUpdate = (id: string, exercises: UsedExerciseArrayItem[]) => {
-    const newLaps = data.laps.map(lap => {
-      if (lap.id === id) 
-        return {id: lap.id, exercises: exercises, exerciseCount: exercises.length};
+    const newLaps = data.laps.map((lap) => {
+      if (lap.id === id)
+        return {
+          id: lap.id,
+          exercises: exercises,
+          exerciseCount: exercises.length,
+        };
 
       return lap;
     });
 
-    setData(prevData => ({
+    setData((prevData) => ({
       ...prevData,
-      laps: newLaps
+      laps: newLaps,
     }));
-  }
+  };
 
   const handleDeleteLapButton = (e: SyntheticEvent, id: string) => {
     e.preventDefault();
 
     const newLaps = data.laps.filter((prevLap) => prevLap.id !== id);
 
-    setData(prevData => ({
+    setData((prevData) => ({
       ...prevData,
-      laps: newLaps
+      laps: newLaps,
     }));
-  } 
+  };
 
-  return(
+  return (
     <Layout>
       <Auth>
-        <form onSubmit={ e => handleEditButton(e, data.id) }>
-          <h2 className="p-10 pl-0 text-xl">Edit workout - { props.workout.title }</h2>
+        <form onSubmit={(e) => handleEditButton(e, data.id)}>
+          <h2 className="p-10 pl-0 text-xl">
+            Edit workout - {props.workout.title}
+          </h2>
           <div className="mb-4">
-            <label className="input-label" htmlFor="title">Workout title</label>
-            <input className="input-text" onChange={ handleInput } autoFocus type="text" placeholder="Exercise title" id="title" name="title" value={ data.title } />
+            <label className="input-label" htmlFor="title">
+              Workout title
+            </label>
+            <input
+              className="input-text"
+              onChange={handleInput}
+              autoFocus
+              type="text"
+              placeholder="Exercise title"
+              id="title"
+              name="title"
+              value={data.title}
+            />
           </div>
           <div className="mb-4">
-            <label className="input-label" htmlFor="description">Exercise description</label>
-            <textarea className="input-text" onChange={ handleInput } cols={ 30 } placeholder="Exercise description" rows={ 3 } id="description" name="description" value={ data.description } />
+            <label htmlFor="isPublic" className="input-label">
+              Make workout public
+            </label>
+            <input
+              type="checkbox"
+              aria-label="Make workout public"
+              className="xt-check xt-switch rounded-full bg-gray-200 border border-transparent transition-all checked:bg-primary-500 scale-150 ml-2"
+              name="isPublic"
+              checked={data.isPublic}
+              onChange={handleToggle}
+            />
           </div>
           <div className="mb-4">
-          { 
-            data.laps && data.laps.map((lap: Lap, i: number) => (
-              <LapTable id={ lap.id } lapIndex={ i } exercises={ lap.exercises } exerciseList={ props.exerciseList } onUpdate={ handleUpdate } onDelete={ handleDeleteLapButton } key={ lap.id } />
-            )) 
-          }
+            <label className="input-label" htmlFor="description">
+              Exercise description
+            </label>
+            <textarea
+              className="input-text"
+              onChange={handleInput}
+              cols={30}
+              placeholder="Exercise description"
+              rows={3}
+              id="description"
+              name="description"
+              value={data.description}
+            />
           </div>
-          <button className="add-button" onClick={ handleAddLapButton }>Add lap</button>
-          <input className="ml-4 send-button"type="submit" value="Edit workout" />
+          <div className="mb-4">
+            {data.laps &&
+              data.laps.map((lap: Lap, i: number) => (
+                <LapTable
+                  id={lap.id}
+                  lapIndex={i}
+                  exercises={lap.exercises}
+                  exerciseList={props.exerciseList}
+                  onUpdate={handleUpdate}
+                  onDelete={handleDeleteLapButton}
+                  key={lap.id}
+                />
+              ))}
+          </div>
+          <button className="add-button" onClick={handleAddLapButton}>
+            Add lap
+          </button>
+          <input
+            className="ml-4 send-button"
+            type="submit"
+            value="Edit workout"
+          />
         </form>
       </Auth>
     </Layout>
   );
-}
+};
 
-export const getServerSideProps: GetServerSideProps<any> = async ({ params, req, res }) => {
+export const getServerSideProps: GetServerSideProps<any> = async ({
+  params,
+  req,
+  res,
+}) => {
   const session = await getSession({ req });
   if (!session) {
     res.statusCode = 403;
-    return { 
-      props: { 
-        exerciseList: [] 
-      } 
+    return {
+      props: {
+        exerciseList: [],
+      },
     };
   }
 
@@ -131,6 +203,7 @@ export const getServerSideProps: GetServerSideProps<any> = async ({ params, req,
     select: {
       id: true,
       title: true,
+      isPublic: true,
       description: true,
       laps: {
         select: {
@@ -144,26 +217,26 @@ export const getServerSideProps: GetServerSideProps<any> = async ({ params, req,
                   exercise: {
                     select: {
                       title: true,
-                      description: true
-                    }
-                  }
-                }
-              }
-            }
+                      description: true,
+                    },
+                  },
+                },
+              },
+            },
           },
           exerciseCount: true,
-          id: true
-        }
-      }
-    }
+          id: true,
+        },
+      },
+    },
   });
 
-  return { 
-    props: { 
+  return {
+    props: {
       workout,
-      exerciseList: JSON.parse(JSON.stringify(exerciseList)) 
-    } 
-  }
-}
+      exerciseList: JSON.parse(JSON.stringify(exerciseList)),
+    },
+  };
+};
 
 export default EditWorkout;
