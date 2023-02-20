@@ -6,27 +6,21 @@ import { getSession, useSession } from "next-auth/react";
 import LapTable from "../../components/lapTable/LapTable";
 import { v4 as uuidv4 } from "uuid";
 import Router from "next/router";
-import { Exercise, Lap, UsedExerciseArrayItem } from "../../types";
+import { Exercise, Lap, UsedExerciseArrayItem, Workout } from "../../types";
 
 type Props = {
   exerciseList: Exercise[];
 };
 
-type State = {
-  userId: string;
-  title: string;
-  description: string;
-  public: boolean;
-  laps: Lap[];
-};
+type State = Omit<Workout, "id" | "userId"> & { userId: string };
 
 const CreateWorkout: NextPage<Props> = (props) => {
   const [data, setData] = useState<State>({
-    userId: "",
     title: "",
     description: "",
-    public: true,
+    isPublic: true,
     laps: [],
+    userId: "",
   });
 
   const { data: session, status } = useSession();
@@ -157,9 +151,9 @@ const CreateWorkout: NextPage<Props> = (props) => {
           <input
             type="checkbox"
             aria-label="Amount of reps or seconds"
-            className="xt-check xt-switch rounded-full bg-gray-200 border border-transparent transition-all checked:bg-primary-500 scale-150"
+            className="xt-check xt-switch rounded-full bg-gray-200 border border-transparent transition-all checked:bg-primary-500 scale-150 ml-2"
             name="public"
-            checked={data.public}
+            checked={data.isPublic}
             onChange={handleToggle}
           />
         </div>
