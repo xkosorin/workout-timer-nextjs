@@ -3,7 +3,10 @@ import { getSession } from "next-auth/react";
 import prisma from "../../../lib/prisma";
 import { Lap, UsedExercise, UsedExerciseArrayItem } from "../../../types";
 
-export default async function handle(req: NextApiRequest, res: NextApiResponse) {
+export default async function handle(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   const method = req.method;
 
   const session = await getSession({ req });
@@ -11,14 +14,14 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
   if (!session) {
     res.status(403).json({
       message:
-        'You must be sign in to view the protected content on this page.',
-    })
+        "You must be signed in to view the protected content on this page.",
+    });
   }
 
-  const workoutId: string = (req.query.id as string);
+  const workoutId: string = req.query.id as string;
 
-  switch(method) {
-    case 'DELETE':
+  switch (method) {
+    case "DELETE":
       if (!workoutId) {
         res.status(404).json("No id specified");
         return;
@@ -26,87 +29,84 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
 
       const lapsToDelete = await prisma.lap.findMany({
         where: {
-          workoutId
+          workoutId,
         },
         select: {
-          id: true
-        }
-      })
+          id: true,
+        },
+      });
 
-      const lapsIds = lapsToDelete.map((lap) => (lap.id))
+      const lapsIds = lapsToDelete.map((lap) => lap.id);
 
       const deleteUsedExercises = prisma.usedExercise.deleteMany({
         where: {
           laps: {
             some: {
               lapId: {
-                in: lapsIds
-              }
-            }
-          }
-        }
-      })
+                in: lapsIds,
+              },
+            },
+          },
+        },
+      });
 
       const deleteWorkout = prisma.workout.delete({
         where: {
-          id: workoutId
-        }
-      })
+          id: workoutId,
+        },
+      });
 
-      let deleteTransaction
+      let deleteTransaction;
       try {
-        await prisma.$transaction([
-          deleteUsedExercises,
-          deleteWorkout
-        ])
-      } catch(e) {
-        console.error(e)
-        res.status(500)
+        await prisma.$transaction([deleteUsedExercises, deleteWorkout]);
+      } catch (e) {
+        console.error(e);
+        res.status(500);
       }
 
-      res.status(200).json(deleteTransaction)
+      res.status(200).json(deleteTransaction);
 
-    case 'PUT':
-      let { id, title, description, laps } = req.body;
-      let updateTransaction
+    case "PUT":
+      let { id, title, isPublic, description, laps } = req.body;
+      let updateTransaction;
 
       try {
         updateTransaction = await prisma.$transaction(async (prisma) => {
           //* Get updated usedExercises from req
-          const updatedUsedExercises = laps.map((lap: Lap) => (lap.exercises))
+          const updatedUsedExercises = laps.map((lap: Lap) => lap.exercises);
 
           //* Update usedExercises and create new ones if needed
-          const updateUsedExercises: UsedExercise[][] =
-            await Promise.all(
-              updatedUsedExercises.map(
-                async (usedExercises: UsedExerciseArrayItem[]) => 
-                  await Promise.all(
-                    usedExercises.map(async (exercise: UsedExerciseArrayItem) => 
+          const updateUsedExercises: UsedExercise[][] = await Promise.all(
+            updatedUsedExercises.map(
+              async (usedExercises: UsedExerciseArrayItem[]) =>
+                await Promise.all(
+                  usedExercises.map(
+                    async (exercise: UsedExerciseArrayItem) =>
                       await prisma.usedExercise.upsert({
                         where: {
-                          id: exercise.usedExercise.id
+                          id: exercise.usedExercise.id,
                         },
                         update: {
                           timed: exercise.usedExercise.timed,
-                          reps: exercise.usedExercise.reps
+                          reps: exercise.usedExercise.reps,
                         },
                         create: {
                           timed: exercise.usedExercise.timed,
                           reps: exercise.usedExercise.reps,
                           exercise: {
                             connect: {
-                              title: exercise.usedExercise.exercise.title
-                            }
-                          }
-                        }
+                              title: exercise.usedExercise.exercise.title,
+                            },
+                          },
+                        },
                       })
-                    )
                   )
-              )
+                )
             )
+          );
 
           //* Get ids of laps
-          const lapsIds = laps.map((lap: Lap) => lap.id)
+          const lapsIds = laps.map((lap: Lap) => lap.id);
 
           //* Remove deleted laps from DB
           await prisma.lap.deleteMany({
@@ -114,77 +114,78 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
               AND: {
                 workoutId: id,
                 id: {
-                  notIn: lapsIds
-                }
-              }
-            }
-          })
-
-          //* Update laps and create new ones if needed 
-          //* and recreate usedExercise-Lap relations
-          await Promise.all(laps.map(async (lap: Lap, i: number) => 
-            prisma.lap.upsert({
-              where: {
-                id: lap.id
-              },
-              update: {
-                exerciseCount: lap.exerciseCount,
-                exercises: {
-                  deleteMany: {
-                    lapId: lap.id
-                  },
-                  create:                       
-                    await Promise.all(lap.exercises.map(
-                      (_, j: number) => ({
-                        usedExerciseId: updateUsedExercises[i][j].id
-                      })
-                    ))
-                }
-              },
-              create: {
-                exerciseCount: lap.exerciseCount,
-                exercises: {
-                  create:                       
-                    await Promise.all(lap.exercises.map(
-                      (_, j: number) => ({
-                        usedExerciseId: updateUsedExercises[i][j].id
-                      })
-                    ))
+                  notIn: lapsIds,
                 },
-                workout: {
-                  connect: {
-                    id
-                  }
-                }
-              }
-            })
-          ))
+              },
+            },
+          });
+
+          //* Update laps and create new ones if needed
+          //* and recreate usedExercise-Lap relations
+          await Promise.all(
+            laps.map(async (lap: Lap, i: number) =>
+              prisma.lap.upsert({
+                where: {
+                  id: lap.id,
+                },
+                update: {
+                  exerciseCount: lap.exerciseCount,
+                  exercises: {
+                    deleteMany: {
+                      lapId: lap.id,
+                    },
+                    create: await Promise.all(
+                      lap.exercises.map((_, j: number) => ({
+                        usedExerciseId: updateUsedExercises[i][j].id,
+                      }))
+                    ),
+                  },
+                },
+                create: {
+                  exerciseCount: lap.exerciseCount,
+                  exercises: {
+                    create: await Promise.all(
+                      lap.exercises.map((_, j: number) => ({
+                        usedExerciseId: updateUsedExercises[i][j].id,
+                      }))
+                    ),
+                  },
+                  workout: {
+                    connect: {
+                      id,
+                    },
+                  },
+                },
+              })
+            )
+          );
 
           //* Delete usedExercises which has no relation to any lap
           await prisma.usedExercise.deleteMany({
             where: {
               laps: {
-                none: {}
-              }
-            }
-          })
+                none: {},
+              },
+            },
+          });
 
           //* Update workout info
           return prisma.workout.update({
             where: {
-              id
+              id,
             },
             data: {
               title: title,
+              isPublic: isPublic,
               description: description,
-            }
-          })
-        })
+            },
+          });
+        });
       } catch (e) {
-        console.error(e)
-        res.status(500)
+        console.error(e);
+        res.status(500);
       }
 
-      res.status(200).json(updateTransaction)
+      res.status(200).json(updateTransaction);
   }
 }
