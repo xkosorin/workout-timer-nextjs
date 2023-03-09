@@ -1,13 +1,64 @@
 This is a personal project built on Next.js which I primarily used for learning and getting better with React and Next.js
 
+The goal of this project is to create a web application which
+
+This project is still WIP
+
+## Implemented functionalities
+
+- Login using nextauth
+- Ability to create exercise
+  - Title
+  - Description
+  - Example image / video (Youtube)
+- Ability to create workout
+  - add arbitrary number of exercises
+  - add arbitrary number of laps
+  - set exercises either for time or repetitons
+  - set number or repetitions or amount of time
+- Ability to browse all workouts and exercises
+- Ability to "play" selected workout
+
+## TODO
+
+- [ ] Add option to create private workout
+- [ ] Add option to share private workout via direct link
+- [ ] Add option to make workout accessible only to certain users
+
+* [ ] Write tests
+
+## Technologies Used
+
+- Next.js
+- Typescript
+- React @16.13.0
+- Prisma @4.0.0
+- nextauth @1.0.3
+- usehooks-ts @2.9.1
+- Tailwind CSS
+- Tailwind-elements
+
 ## Getting Started
 
 First, run the development server:
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+1. Clone the repository `git clone git@github.com:xkosorin/workout-timer-nextjs.git`
+   - If you are using npm delete `yarn.lock` file
+2. Run `yarn install` or `npm install`
+3. Rename `.env.example` to `.env`
+   - Run `mv .env.example .env` to rename the file
+4. Fill in fields in `.env` file
+   - For `DATABASE_URL` the default value is `postgresql://admin:passwd@localhost:5432/db`
+     - If you want to change default values you have to modify `docker-compose.yaml` file
+   - For `GITHUB_ID` and `GITHUB_SECRET` you have go to [Github Developer Settings](https://github.com/settings/developers)
+     - Click on `New OAuth App`
+     - For `Homepage URL` use `http://localhost:3000/`
+     - For `Authorization callback URL` use `http://localhost:3000/api/auth`
+     - Click on `Generate a new client secret`
+   - For `EMAIL_FROM` you can specify any valid form of email address
+   - For `EMAIL_SERVER` you have to specify a SMTP address (example: `smtp://username:password@smtp.example.com:587`)
+5. Run the application by `yarn dev` or `npm run dev`
+6. Run the database using Docker by `docker-compose up`
+   - Optionally you can run `npx prisma db seed` to prepopulate some example exercises
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
