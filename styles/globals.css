@@ -24,7 +24,7 @@
   }
 
   .send-button {
-    @apply hover:bg-transparent bg-green-600 hover:bg-green-500 font-semibold text-white py-2 px-4 border-b-4 border-green-800 active:border-b-0 active:mt-[4px] rounded transition-all h-11 active:h-10 duration-75;
+    @apply hover:bg-transparent bg-green-600 hover:bg-green-500 font-semibold text-white py-2 px-4 border-b-4 border-green-800 active:border-b-0 active:mt-[4px] rounded transition-all h-11 active:h-10 duration-75 disabled:opacity-30 disabled:active:border-b-4 disabled:active:mt-0 disabled:active:h-11;
   }
 
   .delete-button {
@@ -80,4 +80,3 @@
   padding: 1rem;
   border-radius: 1rem;
 }
-
