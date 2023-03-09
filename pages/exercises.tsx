@@ -1,11 +1,10 @@
 import { GetServerSideProps, GetServerSidePropsContext, NextPage } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import Layout from "../components/Layout";
 import prisma from "../lib/prisma";
 import { Exercise } from "../types";
 import { getSession } from "next-auth/react";
-import { getYoutubeThumbnail } from "../utils/helpers";
+import ExerciseMedia from "../components/ExerciseMedia";
 
 type Props = {
   exercises: Exercise[];
@@ -16,39 +15,30 @@ const Exercises: NextPage<Props> = (props: Props) => {
     <Layout>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {props.exercises.map((exercise: Exercise, i: number) => {
-          let imageLink;
-
-          if (exercise.mediaURL) {
-            imageLink = exercise.mediaIsImage
-              ? exercise.mediaURL
-              : getYoutubeThumbnail(exercise.mediaURL);
-          } else {
-            imageLink =
-              "https://upload.wikimedia.org/wikipedia/commons/6/65/No-Image-Placeholder.svg";
-          }
-
           return (
             <div key={i} className="flex flex-col items-center">
               <Link href={"/exercise/" + exercise.id}>
-                <h3
-                  key={i}
-                  className="uppercase text-lg text-gray-600 font-semibold flex-1"
-                >
-                  {exercise.title}
-                </h3>
+                <>
+                  <h3
+                    key={i}
+                    className="uppercase text-lg text-gray-600 font-semibold flex-1"
+                  >
+                    {exercise.title}
+                  </h3>
+                  <p className="text-sm font-light text-slate-400">
+                    {exercise.description}
+                  </p>
+                  <div style={{ width: "100%", height: "100%" }}>
+                    <ExerciseMedia
+                      mediaURL={exercise.mediaURL}
+                      mediaIsImage={exercise.mediaIsImage}
+                      showThumbnail={true}
+                      width={400}
+                      height={400}
+                    />
+                  </div>
+                </>
               </Link>
-              <p className="text-sm font-light text-slate-400">
-                {exercise.description}
-              </p>
-              {
-                <Image
-                  src={imageLink}
-                  width={300}
-                  height={300}
-                  alt="Picture of the exercise"
-                  className="flex-1"
-                />
-              }
             </div>
           );
         })}

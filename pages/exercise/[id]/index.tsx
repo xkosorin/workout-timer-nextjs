@@ -1,13 +1,12 @@
 import { GetServerSideProps, NextPage } from "next";
 import { useSession } from "next-auth/react";
-import Image from "next/image";
 import Link from "next/link";
 import Router from "next/router";
 import { SyntheticEvent } from "react";
+import ExerciseMedia from "../../../components/ExerciseMedia";
 import Layout from "../../../components/Layout";
 import prisma from "../../../lib/prisma";
 import { Exercise } from "../../../types";
-import { getYoutubeVideId } from "../../../utils/helpers";
 
 type Props = {
   exercise: Exercise;
@@ -71,45 +70,6 @@ const Exercise: NextPage<Props> = (props: Props) => {
     }
   }
 
-  const getYoutubeLink = () => {
-    let videoId;
-
-    if (props.exercise.mediaURL) {
-      videoId = getYoutubeVideId(props.exercise.mediaURL);
-    }
-
-    return `https://www.youtube.com/embed/${videoId}`;
-  };
-
-  const getMedia = () => {
-    if (!props.exercise.mediaURL) {
-      return "https://upload.wikimedia.org/wikipedia/commons/6/65/No-Image-Placeholder.svg";
-    }
-
-    if (props.exercise.mediaIsImage) {
-      return (
-        <Image
-          src={props.exercise.mediaURL}
-          alt="Test"
-          width={600}
-          height={600}
-        />
-      );
-    } else {
-      return (
-        <iframe
-          id="ytplayer"
-          width="100%"
-          height="360"
-          src={`${getYoutubeLink()}`}
-          allow="autoplay; encrypted-media"
-          allowFullScreen
-          title="video"
-        />
-      );
-    }
-  };
-
   return (
     <Layout>
       <div className="grid grid-cols-1 md:grid-cols-2 px-2 md:px-0">
@@ -118,7 +78,15 @@ const Exercise: NextPage<Props> = (props: Props) => {
           <span className="ml-0 md:ml-auto order-1 md:order-2">{options}</span>
         </div>
         <p>{props.exercise.description}</p>
-        {getMedia()}
+        <div>
+          <ExerciseMedia
+            mediaURL={props.exercise.mediaURL}
+            mediaIsImage={props.exercise.mediaIsImage}
+            showThumbnail={false}
+            height={500}
+            width={500}
+          />
+        </div>
       </div>
     </Layout>
   );
