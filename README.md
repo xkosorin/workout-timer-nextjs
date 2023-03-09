@@ -18,14 +18,34 @@ This project is still WIP
   - [x] set number or repetitions or amount of time
 - [x] Ability to browse all workouts and exercises
 - [x] Ability to "play" selected workout
+- [x] Ability to edit / delete exercise (for admin user)
+- [x] Ability to edit / delete workout (for admin user)
+- [x] Working timer on Work Out page
 
 ## TODO
 
 - [ ] Add option to create private workout
 - [ ] Add option to share private workout via direct link
 - [ ] Add option to make workout accessible only to certain users
+- [ ] Add option to edit workout for user who created it
+- [ ] Add option to edit exercise for user who created it
+- [ ] Add error handling on create workout / exercise pages
 
 * [ ] Write tests
+
+## Images
+
+<p align="center">
+  <img src="./images/exercises.png" alt="Desktop version" width="100%">
+  <img src="./images/workout.png" alt="Desktop version" width="100%">
+  <img src="./images/exercise.png" alt="Desktop version" width="100%">
+</p>
+<p>
+  <img src="./images/work-out-reps.png" alt="Desktop version" width="49.5%">
+  <img src="./images/work-out-time.png" alt="Desktop version" width="49.5%">
+</p>
+
+Illustrations used in example images are created by [Lio putra](https://www.shutterstock.com/g/Lioputra)
 
 ## Technologies Used
 
