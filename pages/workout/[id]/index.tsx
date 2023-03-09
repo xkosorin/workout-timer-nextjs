@@ -31,16 +31,13 @@ const Workout: NextPage<Props> = (props: Props) => {
     }
   };
 
-  if (
-    status === "authenticated" &&
-    session.user.id === props.workout.createdBy.id
-  ) {
+  if (status === "authenticated" && session.user.id === props.workout.userId) {
     options = (
       <div className="flex">
         <Link href={"/workout/" + props.workout.id + "/edit"}>
           <a className="add-button mr-2">Edit workout</a>
         </Link>
-        <a onClick={toggleModal} className="delete-button">
+        <a onClick={toggleModal} className="delete-button cursor-pointer">
           Delete Workout
         </a>
       </div>
@@ -137,6 +134,7 @@ export const getServerSideProps: GetServerSideProps<any> = async (
       title: true,
       isPublic: true,
       description: true,
+      userId: true,
       laps: {
         select: {
           exercises: {
@@ -157,10 +155,9 @@ export const getServerSideProps: GetServerSideProps<any> = async (
           },
         },
       },
-      createdBy: {
+      accessibleBy: {
         select: {
-          id: true,
-          name: true,
+          userId: true,
         },
       },
     },
