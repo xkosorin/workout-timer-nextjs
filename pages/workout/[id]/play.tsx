@@ -11,7 +11,7 @@ import { useBoolean } from "usehooks-ts";
 
 type Props = {
   workout: Workout;
-}
+};
 
 type State = {
   currentExercise: UsedExercise;
@@ -19,7 +19,7 @@ type State = {
   exerciseIndex: number;
   numberOfLaps: number;
   numberOfExercises: number;
-}
+};
 
 const Workout: NextPage<Props> = (props: Props) => {
   const [data, setData] = useState<State>({
@@ -27,29 +27,44 @@ const Workout: NextPage<Props> = (props: Props) => {
     numberOfLaps: props.workout.laps.length,
     exerciseIndex: 0,
     numberOfExercises: props.workout.laps[0].exerciseCount,
-    currentExercise: props.workout.laps[0].exercises[0].usedExercise
-  })
-  const { value: isLastExercise, setTrue: setLastExercise, setFalse: unsetLastExercise } = useBoolean(false)
-  const { value: isLastLap, setTrue: setLastLap, setFalse: unsetLastLap } = useBoolean(false)
+    currentExercise: props.workout.laps[0].exercises[0].usedExercise,
+  });
+  const {
+    value: isLastExercise,
+    setTrue: setLastExercise,
+    setFalse: unsetLastExercise,
+  } = useBoolean(false);
+  const {
+    value: isLastLap,
+    setTrue: setLastLap,
+    setFalse: unsetLastLap,
+  } = useBoolean(false);
 
   const infoText = () => {
     if (data.currentExercise.timed) {
       return (
         <>
-          <div className="text-xl md:text-xl flex justify-center">Timed exercise</div>
+          <div className="text-xl md:text-xl flex justify-center">
+            Timed exercise
+          </div>
           <Timer timeInSeconds={data.currentExercise.reps} />
         </>
-      )
+      );
     } else {
       return (
-        <div className="text-base md:text-xl flex flex-col items-center"><span>Number of reps for this exercise: </span><span className="text-3xl text-green-800">{ data.currentExercise.reps }</span></div>
-      )
+        <div className="text-base md:text-xl flex flex-col items-center">
+          <span>Number of reps for this exercise: </span>
+          <span className="text-3xl text-green-800">
+            {data.currentExercise.reps}
+          </span>
+        </div>
+      );
     }
-  }
+  };
 
   const nextExercise = (e: SyntheticEvent) => {
     e.preventDefault();
-    
+
     if (isLastExercise && isLastLap) return;
 
     let nextExerciseIndex = data.exerciseIndex + 1;
@@ -61,30 +76,31 @@ const Workout: NextPage<Props> = (props: Props) => {
       unsetLastExercise();
     }
 
-
     setData((prevData) => ({
       ...prevData,
       exerciseIndex: nextExerciseIndex,
       lapIndex: nextLapIndex,
-      currentExercise: props.workout.laps[nextLapIndex].exercises[nextExerciseIndex].usedExercise
-    }))
+      currentExercise:
+        props.workout.laps[nextLapIndex].exercises[nextExerciseIndex]
+          .usedExercise,
+    }));
 
     if (nextExerciseIndex + 1 === data.numberOfExercises) {
       if (nextLapIndex + 1 === data.numberOfLaps) {
-        setLastLap()
+        setLastLap();
       }
-      setLastExercise()
+      setLastExercise();
     }
-  }
+  };
 
   const prevExercise = (e: SyntheticEvent) => {
     e.preventDefault();
 
     if (data.exerciseIndex === 0 && data.lapIndex === 0) return;
-    
+
     let prevExerciseIndex: number = data.exerciseIndex;
     let prevLapIndex: number = data.lapIndex;
-    
+
     if (data.exerciseIndex === 0) {
       prevLapIndex -= 1;
       prevExerciseIndex = props.workout.laps[prevLapIndex].exerciseCount - 1;
@@ -98,63 +114,74 @@ const Workout: NextPage<Props> = (props: Props) => {
       ...prevData,
       exerciseIndex: prevExerciseIndex,
       lapIndex: prevLapIndex,
-      currentExercise: props.workout.laps[data.lapIndex].exercises[prevExerciseIndex].usedExercise
-    }))
-  }
+      currentExercise:
+        props.workout.laps[data.lapIndex].exercises[prevExerciseIndex]
+          .usedExercise,
+    }));
+  };
 
   return (
     <Layout>
       <div className="flex flex-col items-center">
         <div className="flex flex-col items-center">
-          <h3>{ props.workout.title }</h3>
-          <h5 className="text-xl md:text-2xl font-normal leading-tight mt-0 mb-0">Current lap #{ data.lapIndex + 1 }</h5>
-          <h5 className="text-xl md:text-2xl font-normal leading-tight mt-0 mb-2">Current exercise #{ data.exerciseIndex + 1 } - { data.currentExercise.exercise.title }</h5>
+          <h3>{props.workout.title}</h3>
+          <h5 className="text-xl md:text-2xl font-normal leading-tight mt-0 mb-0">
+            Current lap #{data.lapIndex + 1}
+          </h5>
+          <h5 className="text-xl md:text-2xl font-normal leading-tight mt-0 mb-2">
+            Current exercise #{data.exerciseIndex + 1} -{" "}
+            {data.currentExercise.exercise.title}
+          </h5>
         </div>
         <div className="relative h-64 md:h-[450px] w-full">
-          { data.currentExercise.exercise.mediaURL && <Image src={ data.currentExercise.exercise.mediaURL } layout="fill" objectFit="contain"></Image> }
+          {data.currentExercise.exercise.mediaURL && (
+            <Image
+              src={data.currentExercise.exercise.mediaURL}
+              layout="fill"
+              objectFit="contain"
+              alt="Image of exercise"
+            ></Image>
+          )}
         </div>
-        <div className="w-full">
-          { infoText() }
-        </div>
+        <div className="w-full">{infoText()}</div>
         <div className="w-full flex justify-center">
-          <button 
+          <button
             className="primary-button"
-            onClick={ prevExercise }
-            disabled={ data.exerciseIndex == 0 && data.lapIndex == 0 }
+            onClick={prevExercise}
+            disabled={data.exerciseIndex == 0 && data.lapIndex == 0}
           >
             <MdNavigateBefore />
             <span>Previous</span>
           </button>
-          { isLastExercise && isLastLap ?
-            <button 
-              className="start-button md:w-64 w-1/2">
+          {isLastExercise && isLastLap ? (
+            <button className="start-button md:w-64 w-1/2">
               <span>Finish</span>
               <MdNavigateNext />
             </button>
-            :
-            <button 
-              className="primary-button"
-              onClick={ nextExercise }>
+          ) : (
+            <button className="primary-button" onClick={nextExercise}>
               <span>Next</span>
               <MdNavigateNext />
             </button>
-          }
+          )}
         </div>
       </div>
     </Layout>
   );
-}
+};
 
-export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext) => {
-  const session = await getSession(context)
+export const getServerSideProps: GetServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  const session = await getSession(context);
 
   if (!session) {
     return {
       redirect: {
-        destination: '/404',
+        destination: "/404",
         permanent: false,
       },
-    }
+    };
   }
 
   const workout = await prisma.workout.findUnique({
@@ -164,6 +191,7 @@ export const getServerSideProps: GetServerSideProps = async (context: GetServerS
     select: {
       id: true,
       title: true,
+      isPublic: true,
       description: true,
       laps: {
         select: {
@@ -178,24 +206,24 @@ export const getServerSideProps: GetServerSideProps = async (context: GetServerS
                       title: true,
                       description: true,
                       mediaURL: true,
-                      mediaIsImage: true
-                    }
-                  }
-                }
-              }
-            }
+                      mediaIsImage: true,
+                    },
+                  },
+                },
+              },
+            },
           },
-          exerciseCount: true
-        }
-      }
-    }
+          exerciseCount: true,
+        },
+      },
+    },
   });
 
-  return { 
-    props: { 
-      workout
-    } 
-  }
-}
+  return {
+    props: {
+      workout,
+    },
+  };
+};
 
-export default Workout
+export default Workout;
