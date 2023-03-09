@@ -18,27 +18,25 @@ const Exercises: NextPage<Props> = (props: Props) => {
           return (
             <div key={i} className="flex flex-col items-center">
               <Link href={"/exercise/" + exercise.id}>
-                <>
-                  <h3
-                    key={i}
-                    className="uppercase text-lg text-gray-600 font-semibold flex-1"
-                  >
-                    {exercise.title}
-                  </h3>
-                  <p className="text-sm font-light text-slate-400">
-                    {exercise.description}
-                  </p>
-                  <div style={{ width: "100%", height: "100%" }}>
-                    <ExerciseMedia
-                      mediaURL={exercise.mediaURL}
-                      mediaIsImage={exercise.mediaIsImage}
-                      showThumbnail={true}
-                      width={400}
-                      height={400}
-                    />
-                  </div>
-                </>
+                <h3
+                  key={i}
+                  className="uppercase text-lg text-gray-600 font-semibold flex-1 cursor-pointer"
+                >
+                  {exercise.title}
+                </h3>
               </Link>
+              <p className="text-sm font-light text-slate-400 truncate w-full text-center">
+                {exercise.description}
+              </p>
+              <div style={{ width: "100%", height: "100%" }}>
+                <ExerciseMedia
+                  mediaURL={exercise.mediaURL}
+                  mediaIsImage={exercise.mediaIsImage}
+                  showThumbnail={true}
+                  width={400}
+                  height={400}
+                />
+              </div>
             </div>
           );
         })}
