@@ -27,7 +27,7 @@ const Workouts: NextPage<Props> = (props: Props) => {
                     {workout.title}
                   </h3>
                 </Link>
-                <p className="text-sm font-light text-slate-400">
+                <p className="text-sm font-light text-slate-400 truncate w-full">
                   {workout.description}
                 </p>
               </div>
