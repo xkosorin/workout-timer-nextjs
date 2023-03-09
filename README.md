@@ -6,18 +6,18 @@ This project is still WIP
 
 ## Implemented functionalities
 
-- Login using nextauth
-- Ability to create exercise
-  - Title
-  - Description
-  - Example image / video (Youtube)
-- Ability to create workout
-  - add arbitrary number of exercises
-  - add arbitrary number of laps
-  - set exercises either for time or repetitons
-  - set number or repetitions or amount of time
-- Ability to browse all workouts and exercises
-- Ability to "play" selected workout
+- [x] Login using nextauth
+- [x] Ability to create exercise
+  - [x] Title
+  - [x] Description
+  - [x] Example image / video (Youtube)
+- [x] Ability to create workout
+  - [x] add arbitrary number of exercises
+  - [x] add arbitrary number of laps
+  - [x] set exercises either for time or repetitons
+  - [x] set number or repetitions or amount of time
+- [x] Ability to browse all workouts and exercises
+- [x] Ability to "play" selected workout
 
 ## TODO
 
