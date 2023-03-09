@@ -63,7 +63,9 @@ const Workout: NextPage<Props> = (props: Props) => {
       <div>
         <div className="flex flex-col md:flex-row items-center justify-between">
           <div className="flex items-center">
-            <h3 style={{ marginBottom: 0 }}>{props.workout.title}</h3>
+            <h3 style={{ marginBottom: 0 }} className="text-3xl">
+              {props.workout.title}
+            </h3>
             <Link href={"/workout/" + props.workout.id + "/play"}>
               <a className="start-button h-11 active:h-10 md:w-44 md:justify-items-start ml-5 font-semibold">
                 Work out!
@@ -72,7 +74,7 @@ const Workout: NextPage<Props> = (props: Props) => {
           </div>
           <span>{options}</span>
         </div>
-        <p>{props.workout.description}</p>
+        <p className="pt-4 pb-4">{props.workout.description}</p>
         {props.workout.laps.map((lap: Lap, i: number) => (
           <div key={i}>
             <label className="input-label" htmlFor="title">
