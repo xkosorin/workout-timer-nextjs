@@ -7,7 +7,7 @@ import prisma from "../../../lib/prisma";
 import { UsedExercise, Workout } from "../../../types";
 import { MdNavigateBefore, MdNavigateNext } from "react-icons/md";
 import Timer from "../../../components/Timer";
-import { useBoolean } from "usehooks-ts";
+import { useBoolean, useEffectOnce } from "usehooks-ts";
 
 type Props = {
   workout: Workout;
@@ -39,6 +39,16 @@ const Workout: NextPage<Props> = (props: Props) => {
     setTrue: setLastLap,
     setFalse: unsetLastLap,
   } = useBoolean(false);
+
+  useEffectOnce(() => {
+    if (props.workout.laps.length === 1) {
+      setLastLap();
+
+      if (props.workout.laps[0].exerciseCount === 1) {
+        setLastExercise();
+      }
+    }
+  });
 
   const infoText = () => {
     if (data.currentExercise.timed) {
@@ -115,7 +125,7 @@ const Workout: NextPage<Props> = (props: Props) => {
       exerciseIndex: prevExerciseIndex,
       lapIndex: prevLapIndex,
       currentExercise:
-        props.workout.laps[data.lapIndex].exercises[prevExerciseIndex]
+        props.workout.laps[prevLapIndex].exercises[prevExerciseIndex]
           .usedExercise,
     }));
   };
