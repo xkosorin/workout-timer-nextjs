@@ -1,3 +1,5 @@
+import { User } from "@prisma/client";
+
 export type Lap = {
   id: string;
   exercises: UsedExerciseArrayItem[];
@@ -27,6 +29,7 @@ export type Workout = {
   id: string;
   title: string;
   isPublic: boolean;
+  accessibleBy: User[];
   description: string;
   laps: Lap[];
   userId: string;
