@@ -165,6 +165,24 @@ export const getServerSideProps: GetServerSideProps<any> = async (
     },
   });
 
+  if (!workout) {
+    return {
+      redirect: {
+        destination: "/404",
+        permanent: false,
+      },
+    };
+  }
+
+  if (!workout?.accessibleBy.some((u) => u.userId === session.user.id)) {
+    return {
+      redirect: {
+        destination: "/404",
+        permanent: false,
+      },
+    };
+  }
+
   return {
     props: {
       workout,
