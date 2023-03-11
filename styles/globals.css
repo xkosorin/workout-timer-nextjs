@@ -48,7 +48,7 @@
   }
 
   .primary-button {
-    @apply inline-flex items-center justify-center gap-x-1 h-10 md:w-64 w-1/2 m-2 text-white transition-all duration-75 bg-blue-500 rounded hover:bg-blue-400 border-b-4 border-blue-700 active:border-b-0 active:h-9 active:mt-3;
+    @apply inline-flex items-center justify-center gap-x-1 h-10 md:w-64 w-1/2 m-2 text-white transition-all duration-75 bg-blue-500 rounded hover:bg-blue-400 border-b-4 border-blue-700 active:border-b-0 active:h-9 active:mt-3 disabled:opacity-30 disabled:active:border-b-4 disabled:active:mt-2 disabled:active:h-10;
   }
 }
 
