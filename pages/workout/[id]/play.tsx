@@ -202,6 +202,11 @@ export const getServerSideProps: GetServerSideProps = async (
       id: true,
       title: true,
       isPublic: true,
+      accessibleBy: {
+        select: {
+          userId: true,
+        },
+      },
       description: true,
       laps: {
         select: {
@@ -228,6 +233,24 @@ export const getServerSideProps: GetServerSideProps = async (
       },
     },
   });
+
+  if (!workout) {
+    return {
+      redirect: {
+        destination: "/404",
+        permanent: false,
+      },
+    };
+  }
+
+  if (!workout?.accessibleBy.some((u) => u.userId === session.user.id)) {
+    return {
+      redirect: {
+        destination: "/404",
+        permanent: false,
+      },
+    };
+  }
 
   return {
     props: {
