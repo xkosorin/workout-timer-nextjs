@@ -1,6 +1,6 @@
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
-import { useRouter } from "next/router"
+import { useRouter } from "next/router";
 
 const Header = () => {
   const router = useRouter();
@@ -11,29 +11,31 @@ const Header = () => {
 
   let left = (
     <div className="">
-      <Link href="/">
-        <a className="bold pl-4" data-active={ isActive('/') }>
-          Feed
-        </a>
+      <Link href="/" data-active={isActive("/")} className="bold pl-4">
+        Feed
       </Link>
     </div>
   );
 
   let right = null;
 
-  if (status == 'loading') {
+  if (status == "loading") {
     right = (
       <div>
         <p>Validating session ...</p>
       </div>
-    )
+    );
   }
 
   if (!session) {
     right = (
       <div>
-        <Link href="/api/auth/signin" className="pl-4">
-          <a data-active={ isActive('/signup') }>Log in</a>
+        <Link
+          href="/api/auth/signin"
+          data-active={isActive("/signup")}
+          className="pl-4"
+        >
+          Log in
         </Link>
       </div>
     );
@@ -42,47 +44,65 @@ const Header = () => {
   if (session && session.user) {
     left = (
       <div className="">
-        <Link href="/">
-          <a className="bold" data-active={ isActive('/') }>
-            Feed
-          </a>
+        <Link href={"/"} data-active={isActive("/")} className="font-bold m-2">
+          Feed
         </Link>
-        <Link href="/exercises">
-          <a className="pl-4" data-active={ isActive('/exercises') }>All Exercises</a>
+        <Link
+          href={"/exercises"}
+          data-active={isActive("/exercises")}
+          className="m-2"
+        >
+          All Exercises
         </Link>
-        <Link href="/workouts">
-          <a className="pl-4" data-active={ isActive('/workouts') }>All Workouts</a>
+        <Link
+          href={"/workouts"}
+          data-active={isActive("/workouts")}
+          className="m-2"
+        >
+          All Workouts
         </Link>
       </div>
     );
     right = (
       <div className="">
-        <p className="inline-block">
-          { session.user.name } ({ session.user.email })
-        </p>
-        <Link href="/create/workout">
-          <button className="pl-4">
-            <a>Create Workout</a>
-          </button>
+        <Link
+          href={"/my-workouts"}
+          data-active={isActive("/my-workouts")}
+          className="inline-block cursor-pointer m-2"
+        >
+          {session.user.name} ({session.user.email})
         </Link>
-        <Link href="/create/exercise">
-          <button className="pl-4">
-            <a>Create Exercise</a>
-          </button>
+        <Link
+          href={"/create/workout"}
+          data-active={isActive("/create/workout")}
+          className="inline-block cursor-pointer m-2"
+        >
+          Create Workout
         </Link>
-        <button onClick={ _ => signOut() } className="pl-4">
-          <a>Log out</a>
-        </button>
+        <Link
+          href={"/create/exercise"}
+          data-active={isActive("/create/exercise")}
+          className="inline-block cursor-pointer m-2"
+        >
+          Create Exercise
+        </Link>
+        <Link
+          href={"/api/auth/signout"}
+          onClick={(_) => signOut()}
+          className="m-2"
+        >
+          Log out
+        </Link>
       </div>
     );
   }
 
   return (
     <nav className="flex justify-between p-10">
-      { left }
-      { right }
+      {left}
+      {right}
     </nav>
   );
-}
+};
 
-export default Header
+export default Header;
