@@ -19,15 +19,20 @@ const ExerciseMedia: React.FC<Props> = (props: Props) => {
       <Image
         width={`${props.width}`}
         height={`${props.height}`}
-        layout="responsive"
         src={IMAGE_PLACEHOLDER}
         alt="Exercise media is missing."
+        sizes="100vw"
+        style={{
+          width: "100%",
+          height: "auto",
+        }}
       />
     ) : (
       <Image
-        layout="fill"
         src={IMAGE_PLACEHOLDER}
         alt="Exercise media is missing."
+        fill
+        sizes="100vw"
       />
     );
   }
@@ -37,12 +42,16 @@ const ExerciseMedia: React.FC<Props> = (props: Props) => {
       <Image
         width={`${props.width}`}
         height={`${props.height}`}
-        layout="responsive"
         src={props.mediaURL}
         alt="Exercise image."
+        sizes="100vw"
+        style={{
+          width: "100%",
+          height: "auto",
+        }}
       />
     ) : (
-      <Image layout="fill" src={props.mediaURL} alt="Exercise image." />
+      <Image src={props.mediaURL} alt="Exercise image." fill sizes="100vw" />
     );
   }
 
@@ -53,19 +62,33 @@ const ExerciseMedia: React.FC<Props> = (props: Props) => {
         <Image
           width={`${props.width}`}
           height={`${props.height}`}
-          layout="responsive"
           src={`http://img.youtube.com/vi/${videoId}/mqdefault.jpg`}
           alt="Exercise image."
+          sizes="100vw"
+          style={{
+            width: "100%",
+            height: "auto",
+          }}
         />
       ) : (
         <Image
-          layout="fill"
           src={`http://img.youtube.com/vi/${videoId}/mqdefault.jpg`}
           alt="Exercise image."
+          fill
+          sizes="100vw"
         />
       );
     }
-    return <Image src={IMAGE_PLACEHOLDER} alt="Exercise media is missing." />;
+    return (
+      <Image
+        src={IMAGE_PLACEHOLDER}
+        alt="Exercise media is missing."
+        style={{
+          maxWidth: "100%",
+          height: "auto",
+        }}
+      />
+    );
   } else {
     return (
       <iframe

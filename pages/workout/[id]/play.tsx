@@ -147,10 +147,12 @@ const Workout: NextPage<Props> = (props: Props) => {
           {data.currentExercise.exercise.mediaURL && (
             <Image
               src={data.currentExercise.exercise.mediaURL}
-              layout="fill"
-              objectFit="contain"
               alt="Image of exercise"
-            ></Image>
+              fill
+              sizes="100vw"
+              style={{
+                objectFit: "contain"
+              }}></Image>
           )}
         </div>
         <div className="w-full">{infoText()}</div>
