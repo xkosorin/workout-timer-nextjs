@@ -34,12 +34,15 @@ const Workout: NextPage<Props> = (props: Props) => {
   if (status === "authenticated" && session.user.id === props.workout.userId) {
     options = (
       <div className="flex">
-        <Link href={"/workout/" + props.workout.id + "/edit"}>
-          <a className="add-button mr-2">Edit workout</a>
+        <Link
+          href={"/workout/" + props.workout.id + "/edit"}
+          className="add-button mr-2"
+        >
+          Edit workout
         </Link>
-        <a onClick={toggleModal} className="delete-button cursor-pointer">
+        <button onClick={toggleModal} className="delete-button cursor-pointer">
           Delete Workout
-        </a>
+        </button>
       </div>
     );
   }
@@ -49,12 +52,13 @@ const Workout: NextPage<Props> = (props: Props) => {
       <Modal isShown={isModalShown} toggle={toggleModal}>
         <h4>Are you sure you want to delete this exercise?</h4>
         <div className="flex justify-around">
-          <button
+          <Link
+            href={"/workours"}
             onClick={(e) => handleDeleteButton(e, props.workout.id)}
             className="delete-button w-44"
           >
             Yes
-          </button>
+          </Link>
           <button onClick={toggleModal} className="add-button w-44">
             No
           </button>
@@ -66,10 +70,11 @@ const Workout: NextPage<Props> = (props: Props) => {
             <h3 style={{ marginBottom: 0 }} className="text-3xl">
               {props.workout.title}
             </h3>
-            <Link href={"/workout/" + props.workout.id + "/play"}>
-              <a className="start-button h-11 active:h-10 md:w-44 md:justify-items-start ml-5 font-semibold">
-                Work out!
-              </a>
+            <Link
+              href={"/workout/" + props.workout.id + "/play"}
+              className="start-button h-11 active:h-10 md:w-44 md:justify-items-start ml-5 font-semibold"
+            >
+              Work out!
             </Link>
           </div>
           <span>{options}</span>
