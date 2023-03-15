@@ -67,7 +67,7 @@ export default async function handle(
       res.status(200).json(deleteTransaction);
 
     case "PUT":
-      let { id, title, isPublic, description, laps } = req.body;
+      let { id, title, isPublic, accessibleBy, description, laps } = req.body;
       let updateTransaction;
 
       try {
@@ -169,6 +169,12 @@ export default async function handle(
             },
           });
 
+          await prisma.userOnWorkout.deleteMany({
+            where: {
+              workoutId: id,
+            },
+          });
+
           //* Update workout info
           return prisma.workout.update({
             where: {
@@ -178,6 +184,11 @@ export default async function handle(
               title: title,
               isPublic: isPublic,
               description: description,
+              accessibleBy: {
+                create: accessibleBy.map((userId: string) => ({
+                  userId: userId,
+                })),
+              },
             },
           });
         });
