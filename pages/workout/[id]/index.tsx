@@ -179,7 +179,10 @@ export const getServerSideProps: GetServerSideProps<any> = async (
     };
   }
 
-  if (!workout?.accessibleBy.some((u) => u.userId === session.user.id)) {
+  if (
+    !workout.isPublic &&
+    !workout?.accessibleBy.some((u) => u.userId === session.user.id)
+  ) {
     return {
       redirect: {
         destination: "/404",
