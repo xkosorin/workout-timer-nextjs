@@ -151,8 +151,9 @@ const Workout: NextPage<Props> = (props: Props) => {
               fill
               sizes="100vw"
               style={{
-                objectFit: "contain"
-              }}></Image>
+                objectFit: "contain",
+              }}
+            ></Image>
           )}
         </div>
         <div className="w-full">{infoText()}</div>
