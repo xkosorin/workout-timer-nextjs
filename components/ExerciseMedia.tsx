@@ -3,8 +3,8 @@ import Image from "next/image";
 import { getYoutubeVideId } from "../utils/helpers";
 
 type Props = {
-  mediaURL: string | undefined;
-  mediaIsImage: boolean | undefined;
+  mediaURL?: string | null;
+  mediaIsImage?: boolean | null;
   showThumbnail?: boolean;
   width?: number;
   height?: number;
@@ -14,7 +14,7 @@ const ExerciseMedia: React.FC<Props> = (props: Props) => {
   const IMAGE_PLACEHOLDER =
     "https://upload.wikimedia.org/wikipedia/commons/6/65/No-Image-Placeholder.svg";
 
-  if (props.mediaURL === undefined) {
+  if (props.mediaURL === undefined || props.mediaURL === null) {
     return props.width && props.height ? (
       <Image
         width={`${props.width}`}

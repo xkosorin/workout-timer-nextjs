@@ -18,11 +18,11 @@ export type UsedExercise = {
 };
 
 export type Exercise = {
-  id?: string;
+  id: string;
   title: string;
-  description?: string;
-  mediaURL?: string;
-  mediaIsImage?: boolean;
+  description?: string | null;
+  mediaURL?: string | null;
+  mediaIsImage?: boolean | null;
 };
 
 export type Workout = {
@@ -30,7 +30,7 @@ export type Workout = {
   title: string;
   isPublic: boolean;
   accessibleBy: User[];
-  description: string;
+  description?: string | null;
   laps: Lap[];
   userId: string;
 };
