@@ -22,10 +22,11 @@ This project is still WIP
 - [x] Ability to edit / delete workout (for admin user)
 - [x] Working timer on Work Out page
 - [x] Ability to make workout accessible only to certain users
+- [x] Ability to create private workout
+- [x] Ability to update workout privacy settings
 
 ## TODO
 
-- [ ] Add option to create private workout
 - [ ] Add option to share private workout via direct link
 - [ ] Add option to edit workout for user who created it
 - [ ] Add option to edit exercise for user who created it
