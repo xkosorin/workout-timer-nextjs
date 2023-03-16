@@ -52,10 +52,10 @@ Illustrations used in example images are created by [Lio putra](https://www.shut
 
 - Next.js
 - Typescript
-- React @16.13.0
-- Prisma @4.0.0
-- nextauth @1.0.3
-- usehooks-ts @2.9.1
+- React
+- Prisma
+- nextauth
+- usehooks-ts
 - Tailwind CSS
 - Tailwind-elements
 
