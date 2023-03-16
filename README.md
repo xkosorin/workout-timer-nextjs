@@ -1,6 +1,6 @@
 This is a personal project built on Next.js which I primarily used for learning and getting better with React and Next.js
 
-The goal of this project is to create a web application which
+The goal of this project is to create a web application for coaches to create a workouts and share them with other people. It also should provide a simple interface for a user to follow a workout.
 
 This project is still WIP
 
